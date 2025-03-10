@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} 
+\usepackage[polish]{babel}
+
+\title{\textbf{Specyfikacja funkcjonalna programu dzielącego graf}}
+\author{Adam Domański, Oliwier Osiński}
+\date{09.03.2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Cel projektu}
+
+Celem projektu jest stworzenie programu dzielącego graf w języku C. Program ma podzielić graf określoną liczbę razy, przy jak najmniejszej liczbie usuniętych krawędzi. Różnica w liczbie wierzchołków w nowo utworzonych grafach nie może się różnić o więcej niż podany przez użytkownika margines procentowy. Wszystkie parametry mają być przyjmowane z linii poleceń. Program ma wypisywać otrzymany graf w trybie tekstowym lub binarnym w zależności od preferencji użytkownika.
+
+\section*{Argumenty wywołania programu}
+Do prawidłowego uruchomienia programu należy podać następujące argumenty:
+\begin{itemize}
+    \item ścieżka pliku wejściowego: ścieżka do pliku, który zawiera tekstową interpretację grafu;
+
+    \item liczba podzieleń grafu (N): dodatnia liczba całkowita, której domyślna wartość wynosi 1;
+
+    \item margines różnicy procentowej między powstałymi grafami (M): nieujemna liczba całkowita, której domyślna wartość wynosi 10 (wartości interpretowane w procentach);
+
+    \item ścieżka pliku wyjściowego: ścieżkę do pliku, w którym zostanie zapisany graf po dokonaniu podziałów
+    
+\end{itemize}
+
+\section*{Plik wejściowy}
+Do prawidłowego dokonania podziału grafu potrzebne będą informacje o grafie, który ma zostać podzielony. Dane te mają być zapisane w formacie tekstowym w pliku txt.\\
+
+\textbf{Plik z grafem wejściowym składa się z następujących linii:}
+
+\begin{itemize}
+  \item Maksymalna liczba węzłów w wierszu.
+  \item Indeksy węzłów w poszczególnych wierszach.
+  \item Wskaźniki na pierwsze indeksy węzłów w liście wierszy.
+  \item Grupy węzłów połączone przy pomocy krawędzi.
+  \item Wskaźniki na pierwsze węzły w poszczególnych grupach.
+\end{itemize}
+\textbf{Przykład grafu w pliku wejściowym:}\\
+\texttt{3\\0;2;1;0\\0;2;3\\1;3;4;4;2\\0;3;5}
+
+\section*{Dane wyjściowe}
+Wyniki operacji programu mogą zostać wyświetlone lub zapisane na dwa różne sposoby.
+\begin{enumerate}
+\item W domyślnym trybie tekstowym najpierw w pierwszej linii zwracana jest wartość pomyślnie podzielonych grafów, a następnie podzielone grafy w identycznym formacie jak w pliku wejściowym.
+
+\item W trybie binarnym, gdzie ma być zwracane tylko grafy. Tryb ten nie ma z góry określonego formatu.
+\end{enumerate}
+
+Warto zaznaczyć, że w zależności od podanych flag, program może jednocześnie wyświetlić wynik w terminalu, jak i zapisać go do pliku.\\
+
+\textbf{Program przyjmuje następujące flagi:}
+\begin{itemize}
+\item -o plik.out - flaga przyjmuje argument w postaci ścieżki do pliku, w którym ma zostać zapisany wynik operacji;
+
+\item -t - flaga powoduje wyświetlenie wyniku w terminalu;
+
+\item -b - flaga zmienia sposób wyświetlania wyniku z tekstowego na binarny
+\end{itemize}
+
+\section*{Możliwe błędy podczas uruchamiania}
+\textbf{Program przerywa działanie, gdy napotkania nieprawidłowości w wprowadzonych danych i wyświetla odpowiedni komunikat:}
+
+\begin{enumerate}
+  \item Błąd w lokalizacji pliku wejściowego: \textbf{Nie udało się znaleźć pliku wejściowego o podanej ścieżkce. Przerywam działanie.}
+
+  \item Błąd w odczycie pliku wejściowego: \textbf{Dane w pliku przedstawiające graf są niepoprawne. Przerywam działanie.}
+  
+  \item Niepoprawna liczba podzieleń grafu: \textbf{Liczba podzieleń grafu musi być większa bądź równa 1. Przerywam działanie.}
+  
+  \item Niepoprawny margines różnicy procentowej: \textbf{Liczba marginesu różnicy procentowej między wierzchołkami powstałych grafów musi znajdować się w przedziale [0-100]. Przerywam działanie.}
+  
+\end{enumerate}
+\end{document}
