@@ -42,7 +42,7 @@ Do prawidłowego dokonania podziału grafu potrzebne będą informacje o grafie,
   \item Wskaźniki na pierwsze węzły w poszczególnych grupach.
 \end{itemize}
 \textbf{Przykład grafu w pliku wejściowym:}\\
-\texttt{3\\0;2;1;0\\0;2;3\\1;3;4;4;2\\0;3;5}
+\texttt{5\\0;2;4;1;3;0;1;2;3\\0;3;5;9\\0;1;2;5;1;3;4;2;5;7;3;6;4;5;7;5;8;6;7;8 \\0;4;7;10;12;15;17;20}
 
 \section*{Dane wyjściowe}
 Wyniki operacji programu mogą zostać wyświetlone lub zapisane na dwa różne sposoby.
@@ -63,11 +63,15 @@ Warto zaznaczyć, że w zależności od podanych flag, program może jednocześn
 \item -b - flaga zmienia sposób wyświetlania wyniku z tekstowego na binarny
 \end{itemize}
 
+\section*{Teoria}
+
+Program po wczytaniu grafu, dzieli go określoną przez użytkownika liczbę razy, przecinając przy tym jak najmniejszą liczbę krawędzi. Dla każdego podziału różnica procentowa wierzchołków dwóch nowoutworzonych grafów nie może być większa od marginesu procentowego podanego przez użytkownika. Jest ona wyliczana ze wzoru: \[ \frac{|A - B|}{\frac{(A + B)}{2}} \cdot 100\%\],gdzie \textbf{A} - liczba wierzchołków pierwszego z nowopostałych grafów, natomiast \textbf{B} liczba wierzchołków drugiego. Gdy graf został podzielony określoną liczbę razy lub dalszy podział jest niemożliwy, program zapisuje wyniki i kończy działanie.
+
 \section*{Możliwe błędy podczas uruchamiania}
-\textbf{Program przerywa działanie, gdy napotkania nieprawidłowości w wprowadzonych danych i wyświetla odpowiedni komunikat:}
+\textbf{Program przerywa działanie, gdy napotka nieprawidłowości we wprowadzonych danych i wyświetla odpowiedni komunikat:}
 
 \begin{enumerate}
-  \item Błąd w lokalizacji pliku wejściowego: \textbf{Nie udało się znaleźć pliku wejściowego o podanej ścieżkce. Przerywam działanie.}
+  \item Nieudana próba otwarcia pliku wejściowego: \textbf{Nie udało się otworzyć pliku wejściowego o podanej ścieżkce. Przerywam działanie.}
 
   \item Błąd w odczycie pliku wejściowego: \textbf{Dane w pliku przedstawiające graf są niepoprawne. Przerywam działanie.}
   
