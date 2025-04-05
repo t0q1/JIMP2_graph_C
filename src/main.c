@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define BUFSIZE 8192
+#define MAXLINES 100000
+
 int main(int argc, char ** argv)
 {
 
@@ -14,8 +17,13 @@ int main(int argc, char ** argv)
     }
 
     int N = argc > 2 ? atoi(argv[2]) : 1;
-    int M = argc > 3 ? atoi(argv[3]) : 10;
+    if (N < 1) fprintf(stderr, "Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.");
 
+    int M = argc > 3 ? atoi(argv[3]) : 10;
+    if (M < 0 || M > 100) 
+    {
+        fprintf(stderr, "Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.");
+    }
 
     int opt;
     int binary_output = 0;
@@ -39,8 +47,8 @@ int main(int argc, char ** argv)
     }
     if (terminal_output == 0) file_output = 1; // jesli flaga t bez o, to tylko terminal. Jesli brak jakiejkolwiek flagi to wyjscie to pliku
 
+    // while (fgets())
 
-    
 
     return 0;
 }
