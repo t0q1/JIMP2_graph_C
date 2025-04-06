@@ -1,14 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+
+#include "../include/graf.h"
 
 #define BUFSIZE 8192
 #define MAXLINES 100000
 
 int main(int argc, char ** argv)
-{
+{   
+    // TestGraph();
+    if (argc <= 1)
+    {
+        fprintf(stderr, "Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego!");
+        return 1;
+    }
 
-
-    FILE *in = argc > 1 ? fopen(argv[1], "r") : fprintf(stderr, "Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego!");
+    FILE *in = argc > 1 ? fopen(argv[1], "r") : NULL;
 
     if (in == NULL)
     {
@@ -17,12 +25,17 @@ int main(int argc, char ** argv)
     }
 
     int N = argc > 2 ? atoi(argv[2]) : 1;
-    if (N < 1) fprintf(stderr, "Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.");
+    if (N < 1) 
+    {
+        fprintf(stderr, "Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.");
+        return 1;
+    }
 
     int M = argc > 3 ? atoi(argv[3]) : 10;
     if (M < 0 || M > 100) 
     {
         fprintf(stderr, "Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.");
+        return 1;
     }
 
     int opt;

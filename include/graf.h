@@ -1,9 +1,9 @@
 #ifndef _GRAF_H_
 #define _GRAF_H_
 
-typedef struct {
+typedef struct n{
     int vertex;
-    Node * next;
+    struct n* next;
 } Node;
 
 typedef struct {
@@ -14,5 +14,7 @@ typedef struct {
 Node * createNode(int vertex);
 Graph * createGraph(int n);
 void addEdge(Graph* graph, int u, int v);
-
+void printGraph(Graph * graph);
+void freeGraph(Graph * graph);
+void TestGraph();
 #endif
