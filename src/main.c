@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "../include/graf.h"
 
@@ -60,8 +61,65 @@ int main(int argc, char ** argv)
     }
     if (terminal_output == 0) file_output = 1; // jesli flaga t bez o, to tylko terminal. Jesli brak jakiejkolwiek flagi to wyjscie to pliku
 
-    // while (fgets())
 
+    // wczytywanie z pliku, narazie bez zabezpieczen
+    Graph * graph = NULL;
 
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t r;
+    int line_num = 0;
+
+    char * line2 = NULL;
+    char * line3 = NULL;
+    char * line4 = NULL;
+
+    while ((r=getline(&line, &len, in)) != -1 && line_num < 5) // getline dynamicznie alokuje bufor - nie trzeba sie przejmowac dlugoscia linii
+    {
+        if (line_num == 1 ) // linie 2 i 3 zapisuje - tak samo wygladaja na wyjsciu i nie sa do niczego potrzebne 
+        {
+            line2 = malloc(r + 1);
+            strcpy(line2, line);
+            line_num++;
+            continue;
+        }
+        if (line_num == 2)
+        {
+            line3 = malloc(r + 1);
+            strcpy(line3, line);
+            line_num++;
+            continue;
+        }
+        if (line_num == 3) // linie 4 zapisuje, bo z zaleznosci od linii 5 jest ona "dzielona"
+        {
+            line4 = malloc(r + 1);
+            strcpy(line4, line);
+            line_num++;
+            continue;
+        }
+
+        if (line[r - 1] == '\n') line[r - 1] = '\0';
+
+        char * token = strtok(line, ";"); // strtok dzieli tekst do najblizszego znaku ";"
+        while (token != NULL)
+        {
+            // int liczba = atoi(token);
+            // if (line_num == 0) graph = createGraph(liczba);
+            // else 
+            // {
+            //     for(int i = 0; i < liczba; i++)
+            //     {
+
+            //     }
+            // }
+            // // printf(" %d ", liczba);
+            // token = strtok(NULL, ";");
+        }
+        // printf("\n");
+        line_num++;
+    }
+    
+    printf("\n%s\n%s", line2, line3);
+    fclose(in);
     return 0;
 }
