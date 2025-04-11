@@ -1,125 +1,76 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
+#include <stdbool.h>
 
-#include "../include/graf.h"
+#include "../include/getopt.h"
+#include "../include/graph.h"
+#include "../include/load_graph.h"
 
-#define BUFSIZE 8192
-#define MAXLINES 100000
+const char *help_menu = "------POMOC------\n"
+                            "Argumenty:\n"
+                            " (1)\t<path>\t- plik wejsciowy z grafem\n"
+                            " (2)\t<N>\t- liczba podzielen grafu (opcjonalny)\n"
+                            " (3)\t<M>\t- liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow (opcjonalny)\n"
+                            "Flagi:\n"
+                            "\t-h\t- wyswietla pomoc\n"
+                            "\t-b\t- wynik wyswietlany w formie binarnej\n"
+                            "\t-t\t- wynik operacji wyswietlany w terminalu\n"
+                            "\t-o <path>\t- wynik operacji zapisywany w podanym pliku\n";
 
-int main(int argc, char ** argv)
-{   
-    // TestGraph();
-    if (argc <= 1)
-    {
-        fprintf(stderr, "Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego!");
-        return 1;
-    }
+bool binary_output = false;
+bool terminal_output = false;
+bool file_output = false;
+char *output_filename = "wynik.txt";
 
-    FILE *in = argc > 1 ? fopen(argv[1], "r") : NULL;
-
-    if (in == NULL)
-    {
-        fprintf(stderr, "Nie udalo sie otworzyc pliku wejsciowego o podanej sciezkce. Przerywam dzialanie.");
-        return 1;
-    }
-
-    int N = argc > 2 ? atoi(argv[2]) : 1;
-    if (N < 1) 
-    {
-        fprintf(stderr, "Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.");
-        return 1;
-    }
-
-    int M = argc > 3 ? atoi(argv[3]) : 10;
-    if (M < 0 || M > 100) 
-    {
-        fprintf(stderr, "Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.");
-        return 1;
-    }
-
-    int opt;
-    int binary_output = 0;
-    int terminal_output = 0;
-    int file_output = 0;
-    char * output_filename = "wynik.txt";
-    while ((opt = getopt(argc, argv, "bto:")) != -1)
-    {
+int main(int argc, char **argv) {
+    char opt;
+    while ((opt = ogetopt(argc, argv, "hbto:")) != -1) {
         switch (opt) {
+            case 'h':
+                printf("%s\n", help_menu);
+                break;
             case 'b':
-                binary_output = 1;
+                binary_output = true;
                 break;
             case 't':
-                terminal_output = 1;
+                terminal_output = true;
                 break;
             case 'o':
-                file_output = 1;
-                char * output_filename = optarg;
+                file_output = true;
+                output_filename = fargv[0];
                 break;
+            case '?':
+                fprintf(stderr, "Blad: Nieznana flaga -%c. Przerywam dzialanie.\n", cflag);
+                exit(EXIT_FAILURE);
+            case ':':
+                fprintf(stderr, "Blad: Flaga -%c wymaga argumentu. Przerywam dzialanie.\n", cflag);
+                exit(EXIT_FAILURE);
         }
     }
-    if (terminal_output == 0) file_output = 1; // jesli flaga t bez o, to tylko terminal. Jesli brak jakiejkolwiek flagi to wyjscie to pliku
 
-
-    // wczytywanie z pliku, narazie bez zabezpieczen
-    Graph * graph = NULL;
-
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t r;
-    int line_num = 0;
-
-    char * line2 = NULL;
-    char * line3 = NULL;
-    char * line4 = NULL;
-
-    while ((r=getline(&line, &len, in)) != -1 && line_num < 5) // getline dynamicznie alokuje bufor - nie trzeba sie przejmowac dlugoscia linii
-    {
-        if (line_num == 1 ) // linie 2 i 3 zapisuje - tak samo wygladaja na wyjsciu i nie sa do niczego potrzebne 
-        {
-            line2 = malloc(r + 1);
-            strcpy(line2, line);
-            line_num++;
-            continue;
-        }
-        if (line_num == 2)
-        {
-            line3 = malloc(r + 1);
-            strcpy(line3, line);
-            line_num++;
-            continue;
-        }
-        if (line_num == 3) // linie 4 zapisuje, bo z zaleznosci od linii 5 jest ona "dzielona"
-        {
-            line4 = malloc(r + 1);
-            strcpy(line4, line);
-            line_num++;
-            continue;
-        }
-
-        if (line[r - 1] == '\n') line[r - 1] = '\0';
-
-        char * token = strtok(line, ";"); // strtok dzieli tekst do najblizszego znaku ";"
-        while (token != NULL)
-        {
-            // int liczba = atoi(token);
-            // if (line_num == 0) graph = createGraph(liczba);
-            // else 
-            // {
-            //     for(int i = 0; i < liczba; i++)
-            //     {
-
-            //     }
-            // }
-            // // printf(" %d ", liczba);
-            // token = strtok(NULL, ";");
-        }
-        // printf("\n");
-        line_num++;
+    if (vargc <= 1) {
+        fprintf(stderr, "Blad: Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego. Przerywam dzialanie.\n");
+        return EXIT_FAILURE;
     }
-    
-    printf("\n%s\n%s", line2, line3);
-    fclose(in);
-    return 0;
+
+    int n = vargc > 2 ? atoi(vargv[2]) : 1;
+    if (n < 1) {
+        fprintf(stderr, "Blad: Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.\n");
+        return EXIT_FAILURE;
+    }
+
+    int m = vargc > 3 ? atoi(vargv[3]) : 10;
+    if (m < 0 || m > 100) {
+        fprintf(stderr, "Blad: Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.\n");
+        return EXIT_FAILURE;
+    }
+
+    // jesli jest flaga -t bez flagi -o, to wyświetlanie tylko w terminalu.
+    // Jesli brak jakiejkolwiek flagi to wyjscie do pliku
+    if (terminal_output == false)
+        file_output = true;
+
+    // wczytywanie grafu z pliku
+    Graph *graph = load_graph(vargv[1]);
+    return EXIT_SUCCESS;
 }
