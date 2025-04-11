@@ -12,12 +12,13 @@ char **fargv; // argumenty flagi
 char **vargv; // wektor argumentów bez flag
 int fargc; // ilość argumentów w fargv
 int vargc; // ilość argumentów w vargv
+char cflag ; // obecna flaga
 size_t size_fargv = DEFAULT_VECTOR_SIZE;
 size_t size_vargv = DEFAULT_VECTOR_SIZE;
 
 int *argq;
 
-void double_size(char **vector, size_t *current) {
+void double_size(char ***vector, size_t *current) {
     *current *= 2;
 
     void *new_ptr = realloc(*vector, *current);
@@ -78,7 +79,7 @@ bool init_getopt(const char *format) {
     return true;
 }
 
-char ogetopt(const int argc, char **argv, const char *format) {
+char ogetopt(int argc, char **argv, const char *format) {
     if ((init && !init_getopt(format)) || i_argc == argc) {
         return -1;
     }
@@ -89,7 +90,7 @@ char ogetopt(const int argc, char **argv, const char *format) {
 
     if (**(argv + i_argc) != '-') {
         if (vargc == size_vargv - 1)
-            double_size(vargv, &size_vargv);
+            double_size(&vargv, &size_vargv);
 
         *(vargv + vargc) = *(argv + i_argc);
         vargc++;
@@ -97,28 +98,28 @@ char ogetopt(const int argc, char **argv, const char *format) {
         return '.';
     }
 
-    const char f = *(*(argv + i_argc) + i_flag + 1);
-    if (!f) {
+    cflag = *(*(argv + i_argc) + i_flag + 1);
+    if (!cflag) {
         i_argc+=i_farg + 1;
         i_farg = 0;
         i_flag = 0;
         return ogetopt(argc, argv, format);
     }
 
-    if (f < 'a' || f > 'z' || *(argq + f -'a') == -1) {
+    if (cflag < 'a' || cflag > 'z' || *(argq + cflag -'a') == -1) {
         i_flag++;
         return '?';
     }
 
-    if (!*(argq + f - 'a')) {
+    if (!*(argq + cflag - 'a')) {
         i_flag++;
-        return f;
+        return cflag;
     }
 
-    fargc = *(argq + f - 'a');
-    for (int i = 0; i < *(argq + f - 'a'); i++, i_farg++) {
+    fargc = *(argq + cflag - 'a');
+    for (int i = 0; i < *(argq + cflag - 'a'); i++, i_farg++) {
         if (fargc == size_fargv - 1)
-            double_size(fargv, &size_fargv);
+            double_size(&fargv, &size_fargv);
 
         if (i_argc + i_farg + 1 >= argc || **(argv + i_argc + i_farg + 1) == '-') {
             fargc = i;
@@ -127,7 +128,6 @@ char ogetopt(const int argc, char **argv, const char *format) {
         }
         *(fargv + i) = *(argv + i_argc + i_farg + 1);
     }
-
     i_flag++;
-    return f;
+    return cflag;
 }

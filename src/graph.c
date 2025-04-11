@@ -1,33 +1,28 @@
-#include "../include/graf.h"
+#include "../include/graph.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-Node * createNode(int vertex)
-{
+Node *createNode(int vertex) {
     Node * newNode = malloc(sizeof(Node));
     newNode->vertex = vertex;
     newNode->next = NULL;
     return newNode;
 }
 
-Graph * createGraph(int n)
-{
+Graph *createGraph(int n) {
     Graph * graph = malloc(sizeof(Graph));
     graph->n = n;
 
     graph->adj = malloc(n * sizeof(Node *));
 
     for (int i = 0; i < n; i++)
-    {
         graph->adj[i] = NULL;
-    }
 
     return graph;
 }
 
-void addEdge(Graph* graph, int u, int v)
-{
+void addEdge(Graph* graph, int u, int v) {
     Node* newNode = createNode(v);
     newNode->next = graph->adj[u];
     graph->adj[u] = newNode;
@@ -37,8 +32,7 @@ void addEdge(Graph* graph, int u, int v)
     graph->adj[v] = newNode;
 }
 
-void printGraph(Graph * graph)
-{
+void printGraph(Graph *graph) {
     for (int i = 0; i < graph->n; i++)
     {
         Node * temp = graph->adj[i];
@@ -52,13 +46,10 @@ void printGraph(Graph * graph)
     }
 }
 
-void freeGraph(Graph * graph)
-{
-    for (int i = 0; i < graph->n; i++)
-    {
+void freeGraph(Graph * graph) {
+    for (int i = 0; i < graph->n; i++) {
         Node * temp = graph->adj[i];
-        while (temp)
-        {
+        while (temp) {
             Node * toDelete = temp;
             temp = temp->next;
             free(toDelete);
