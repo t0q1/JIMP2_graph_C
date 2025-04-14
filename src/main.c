@@ -72,5 +72,6 @@ int main(int argc, char **argv) {
 
     // wczytywanie grafu z pliku
     Graph *graph = load_graph(vargv[1]);
+    printGraph(graph);
     return EXIT_SUCCESS;
 }

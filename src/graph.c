@@ -1,7 +1,9 @@
 #include "../include/graph.h"
 
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 Node *createNode(int vertex) {
     Node * newNode = malloc(sizeof(Node));
@@ -57,6 +59,71 @@ void freeGraph(Graph * graph) {
     }
     free(graph->adj);
     free(graph);
+}
+
+int * partition(Graph * g)
+{
+    int n = g->n;
+    int *part = malloc(n * sizeof(int));
+    int countA = 0, countB = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (countA < n / 2)
+        {
+            part[i] = 0;
+            countA++;
+        } 
+        else
+        {
+            part[i] = 1;
+            countB++;
+        }
+    }
+
+    bool improved = true;
+    while (improved)
+    {
+        improved = false;
+        for (int u = 0; u < n; u++)
+        {
+            int currentPart = part[u];
+            int otherPart = 1 - currentPart;
+            int external = 0, internal = 0;
+            Node * neighbor = g->adj[u];
+            while (neighbor)
+            {
+                if (part[neighbor->vertex] == currentPart)
+                    internal++;
+                else
+                    external++;
+                neighbor = neighbor->next;
+            }
+
+            int gain = external - internal;
+            if (gain > 0)
+            {
+                if ((currentPart == 0 && countA > countB) || (currentPart == 1 && countB > countA))
+                {
+                    part[u] = otherPart;
+                    if (currentPart == 0)
+                    {
+                        countA--;
+                        countB++;
+                    }
+                    else
+                    {
+                        countB--;
+                        countA++;
+                    }
+                    improved = true;
+                }
+            }
+        }
+
+        return part;
+    }
+
 }
 
 void TestGraph()
