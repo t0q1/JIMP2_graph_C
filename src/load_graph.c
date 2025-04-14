@@ -5,6 +5,32 @@
 #include "../include/graph.h"
 #include "../include/load_graph.h"
 
+void initArray(DynamicArray *arr, int initialCapacity) {
+    arr->data = malloc(initialCapacity * sizeof(int));
+    arr->size = 0;
+    arr->capacity = initialCapacity;
+}
+
+void append(DynamicArray *arr, int value) {
+    if (arr->size >= arr->capacity) {
+        arr->capacity *= 2;
+        arr->data = realloc(arr->data, arr->capacity * sizeof(int));
+    }
+    arr->data[arr->size++] = value;
+}
+
+void freeArray(DynamicArray *arr) {
+    free(arr->data);
+    arr->size = 0;
+    arr->capacity = 0;
+}
+
+void printArray(DynamicArray *arr) {
+    for (int i = 0; i < arr->size; i++)
+        printf("%d ", arr->data[i]);
+    printf("\n");
+}
+
 Graph *load_graph(const char *filename) {
     FILE *f = fopen(filename, "r");
     if (!f) {
@@ -16,121 +42,118 @@ Graph *load_graph(const char *filename) {
     size_t len = 0;
     size_t r;
     int line_num = 0;
-    char * line2;
-    char * line3;
-    char * line4;
-    char * line5;
-    int max_num = 0;
-    
+    DynamicArray *arrays[5];
+    for(int i = 0; i < 5; i++)
+    {
+        arrays[i] = malloc(sizeof(DynamicArray));
+        initArray(arrays[i], 200);
+    }
+
+
     // zczytanie kazdej linii
     while ((r=getline(&line, &len, f)) != -1 && line_num < 5) // getline dynamicznie alokuje bufor - nie trzeba sie przejmowac dlugoscia linii
     {
         if (line[r - 1] == '\n') line[r - 1] = '\0';
-
-        if (line_num == 0)
+        
+        char * token = strtok(line, ";"); // strtok dzieli tekst do najblizszego znaku ";"
+        char * end;
+        while(token != NULL)
         {
-            char * token = strtok(line, ";"); // strtok dzieli tekst do najblizszego znaku ";"
-            char * end;
             int num = strtol(token, &end, 10);
-
+            
             if (*end != '\0' || num < 0)
             {
                 fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
-                return 0;
+                fclose(f);
+                exit(EXIT_FAILURE);
             }
+            append(arrays[line_num], num);
+            token = strtok(NULL, ";");
         }
-        if(line_num == 1)
-        {
-            line2 = malloc(r + 1);
-            strcpy(line2, line);
-        }
-        if(line_num == 2)
-        {
-            line3 = malloc(r + 1);
-            strcpy(line2, line);
-        }
-        if(line_num == 3)
-        {
-            line4 = malloc(r + 1);
-            strcpy(line2, line);
-        }
-        if(line_num == 4)
-        {
-            line5 = malloc(r + 1);
-            strcpy(line2, line);
-        }
+        
         line_num++;
     }
     fclose(f);
 
-    // linijka 2 i 3
-    char * token = strtok(line3, ";");
-    char * token2 = strtok(line2, ";");
-    char * end = NULL;
-    char* end2 = NULL;
+    for(int i =0; i< 5; i++)
+    {
+        printArray(arrays[i]);
+    }
+
+    int max_num = arrays[0]->data[0];
+
+    // linijka 1 i 2 --indeksowane od 0 
+    int size2 = arrays[2]->size;
+    int size1 = arrays[1]->size;
+    if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
+    {
+        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+        fclose(f);
+        exit(EXIT_FAILURE);
+    }
+    
+    for ( int i = 0; i < size2 - 1; i++) // jesli sa malejace
+    {
+        if (arrays[2]->data[i] > arrays[2]->data[i + 1])
+        {
+            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+            fclose(f);
+            exit(EXIT_FAILURE);
+        }
+    }
+    
+    for (int i = 0; i < size1; i++) // jesli wychodzi poza macierz
+    {
+        if (arrays[1]->data[i] > max_num)
+        {   
+            // printf("%d\n", arrays[2]->data[i]);
+            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+            fclose(f);
+            exit(EXIT_FAILURE);
+        }
+    }
+    printf("yolinta");
+    Graph * graph = createGraph(size1);
+
+    // linijka 3 i 4 -ind od 0
+
+    int size4 = arrays[4]->size;
+    int size3 = arrays[3]->size;
+    if (arrays[4]->data[size4-1] != size3) // jesli liczba w lin3 i lin4 sie nie zgadza
+    {
+        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+        fclose(f);
+        exit(EXIT_FAILURE);
+    }
+
+    for ( int i = 0; i < size4 - 1; i++) // jesli sa malejace
+    {
+        if (arrays[4]->data[i] > arrays[4]->data[i + 1])
+        {
+            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+            fclose(f);
+            exit(EXIT_FAILURE);
+        }
+    }
+    
+    
+
     int prev = 0;
-    int num = 0;
-
-    while (token != NULL) // nie jest odporne na powtarzanie cyfr!!!!
+    int first_node = -1;
+    for(int i = 0; i < size4; i++)
     {
-        num = strtol(token, &end, 10);
-        if (*end != '\0' || num < 0 | num < prev)
-        {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
-            exit(EXIT_FAILURE);
-        }
 
-        for ( int i = prev; i < num; i++)
+        for(int j = prev; j < arrays[4]->data[i]; j++)
         {
-            int val = strtol(token2, &end2, 10);
-            if (*end2 != '\0' || val < 0 | val > max_num)
+            if (j == prev) 
             {
-                fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
-                exit(EXIT_FAILURE);
+                first_node = arrays[3]->data[j];
+                continue;
             }
-            token2 = strtok(NULL, ";");
+            addEdge(graph, first_node, arrays[3]->data[j]);
         }
 
-        prev = num;
-        token = strtok(NULL, ";");
+        prev = arrays[4]->data[i];
     }
-
-    printf("%d\n", num);
-    Graph * graph = createGraph(num);
-
-    // linijka 4 i 5
-    token = strtok(line5, ";");
-    token2 = strtok(line4, ";");
-    end = NULL;
-    end2 = NULL;
-    prev = 0;
-    num = 0;
-
-    while (token != NULL)
-    {
-        num = strtol(token, &end, 10);
-        if (*end != '\0' || num < 0 | num < prev)
-        {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
-            exit(EXIT_FAILURE);
-        }
-        int start = 0;
-        for ( int i = prev; i < num; i++)
-        {
-            int val = strtol(token2, &end2, 10);
-            if (*end2 != '\0' || val < 0 | val > max_num)
-            {
-                fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
-                exit(EXIT_FAILURE);
-            }
-            if (i == prev) start = val;
-            else addEdge(graph, start, val);
-            token2 = strtok(NULL, ";");
-        }
-
-        prev = num;
-        token = strtok(NULL, ";");
-    }
-
     return graph;
 }
