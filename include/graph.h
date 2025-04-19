@@ -11,6 +11,12 @@ typedef struct {
     Node ** adj;
 } Graph;
 
+typedef struct {
+    Graph *subgraphs[500];
+    int count;
+} ListOfGraphs;
+
+
 Node * createNode(int vertex);
 Graph * createGraph(int n);
 void addEdge(Graph* graph, int u, int v);

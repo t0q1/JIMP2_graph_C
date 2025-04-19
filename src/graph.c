@@ -125,29 +125,61 @@ int * partition(Graph * g)
 
 }
 
-// void recursive_partition(Graph* graph, int* part, int current_part, int num_parts, int margin_percent) {
-//     if (num_parts == 1) return;
+// bool margin_ok(int sizeA, int sizeB, int margin_percent) {
+//     int total = sizeA + sizeB;
+//     int diff = (int)(abs(sizeA - sizeB) / (double)total * 200);
+//     return diff <= margin_percent;
+// }
 
-//     // Podział current_part na 2
-//     int* sub_part = partition_2way(graph, margin_percent); // Zwraca tablicę 0/1
+// void add_partition(ListOfGraphs *list, Graph *g) {
+//     if (list->count < 500) {
+//         list->subgraphs[list->count++] = g;
+//     }
+// }
 
-//     // Aktualizuj globalną tablicę `part` na np. 2*current_part i 2*current_part+1
-//     for (int i = 0; i < graph->num_vertices; i++) {
-//         if (part[i] == current_part) {
-//             part[i] = (sub_part[i] == 0) ? (2 * current_part) : (2 * current_part + 1);
+// int find_largest_partition(ListOfGraphs *list) {
+//     int max_index = -1;
+//     int max_size = -1;
+//     for (int i = 0; i < list->count; i++) {
+//         int size = count_vertices(list->subgraphs[i]);
+//         if (size > max_size) {
+//             max_size = size;
+//             max_index = i;
 //         }
 //     }
-
-//     // Rekurencyjnie wywołaj na dwóch podgrafach
-//     // (trzeba wyciągnąć te podgrafy z oryginalnego grafu!)
-//     Graph* g0 = extract_subgraph(graph, part, 2 * current_part);
-//     Graph* g1 = extract_subgraph(graph, part, 2 * current_part + 1);
-
-//     recursive_partition(g0, part, 2 * current_part, num_parts / 2, margin_percent);
-//     recursive_partition(g1, part, 2 * current_part + 1, num_parts / 2, margin_percent);
-
-//     // zwolnij g0, g1
+//     return max_index;
 // }
+
+// void recursive_partition(Graph *g, int k, double margin_percent, ListOfGraphs *result) {
+//     add_partition(result, g);
+
+//     while (result->count < k) {
+//         int index = find_largest_partition(result);
+//         if (index == -1) break;
+
+//         Graph *to_split = result->subgraphs[index];
+//         int n = to_split->n;
+//         int *part = partition(to_split); 
+
+//         Graph *A = extract_subgraph(to_split, part, 0);
+//         Graph *B = extract_subgraph(to_split, part, 1);
+
+//         int sizeA = count_vertices(A);
+//         int sizeB = count_vertices(B);
+
+//         if (!margin_ok(sizeA, sizeB, margin_percent)) {
+//             free(A);
+//             free(B);
+//             break; // nie udalo sie podzielic, konczymy
+//         }
+
+//         // Podmieniamy stara partycje dwiema nowymi
+//         result->subgraphs[index] = A;
+//         add_partition(result, B);
+
+//         free(part);
+//     }
+// } 
 
 void TestGraph()
 {

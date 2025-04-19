@@ -85,11 +85,12 @@ Graph *load_graph(const char *filename) {
     // linijka 1 i 2 --indeksowane od 0 
     int size2 = arrays[2]->size;
     int size1 = arrays[1]->size;
-    if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
-    {
-        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.2");
-        exit(EXIT_FAILURE);
-    }
+    // tego jednak nie trzeba
+    // if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
+    // {
+    //     fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.2");
+    //     exit(EXIT_FAILURE);
+    // }
     
     for ( int i = 0; i < size2 - 1; i++) // jesli sa malejace
     {
