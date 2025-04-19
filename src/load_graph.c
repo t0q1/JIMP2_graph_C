@@ -73,7 +73,7 @@ Graph *load_graph(const char *filename) {
         
         line_num++;
     }
-    fclose(f);
+    fclose(f); // ZAMYKAM PLIK!!!
 
     for(int i =0; i< 5; i++)
     {
@@ -85,7 +85,7 @@ Graph *load_graph(const char *filename) {
     // linijka 1 i 2 --indeksowane od 0 
     int size2 = arrays[2]->size;
     int size1 = arrays[1]->size;
-    // tego jednak nie trzeba
+    // tego chyba nie trzeba
     // if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
     // {
     //     fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.2");
@@ -100,27 +100,29 @@ Graph *load_graph(const char *filename) {
             exit(EXIT_FAILURE);
         }
     }
-    
-    for (int i = 0; i < size1; i++) // jesli wychodzi poza macierz
+
+    for (int i = 0; i < size2 - 1; i++)
     {
-        if (arrays[1]->data[i] > max_num)
-        {   
-            // printf("%d\n", arrays[2]->data[i]);
-            fprintf(stderr, "\ny4:%d, %d\n", arrays[1]->data[i], max_num);
+        if (arrays[2]->data[i + 1] - arrays[2]->data[i + 1] > max_num)
+        {
             fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.4");
             exit(EXIT_FAILURE);
         }
     }
-    // printf("yolinta");
+    if (arrays[2]->data[size2 - 1] < size1 && size1 - arrays[2]->data[size2 - 1] > max_num)
+    {
+        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.4");
+        exit(EXIT_FAILURE);
+    }
     Graph * graph = createGraph(size1);
 
+
+
     // linijka 3 i 4 -ind od 0
-    
-    
     int size4 = arrays[4]->size;
     int size3 = arrays[3]->size;
 
-    // tego jednak nie trzeba
+    // tego chyba nie trzeba
     // if (arrays[4]->data[size4-1] != size3) // jesli liczba w lin3 i lin4 sie nie zgadza
     // {
     //     fprintf(stderr, "\ny5:%d, %d\n", arrays[4]->data[size4-1], size3);
