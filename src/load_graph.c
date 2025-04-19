@@ -63,7 +63,7 @@ Graph *load_graph(const char *filename) {
             
             if (*end != '\0' || num < 0)
             {
-                fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+                fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.1");
                 fclose(f);
                 exit(EXIT_FAILURE);
             }
@@ -87,7 +87,7 @@ Graph *load_graph(const char *filename) {
     int size1 = arrays[1]->size;
     if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
     {
-        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.2");
         fclose(f);
         exit(EXIT_FAILURE);
     }
@@ -96,7 +96,7 @@ Graph *load_graph(const char *filename) {
     {
         if (arrays[2]->data[i] > arrays[2]->data[i + 1])
         {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.3");
             fclose(f);
             exit(EXIT_FAILURE);
         }
@@ -107,12 +107,12 @@ Graph *load_graph(const char *filename) {
         if (arrays[1]->data[i] > max_num)
         {   
             // printf("%d\n", arrays[2]->data[i]);
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.4");
             fclose(f);
             exit(EXIT_FAILURE);
         }
     }
-    printf("yolinta");
+    // printf("yolinta");
     Graph * graph = createGraph(size1);
 
     // linijka 3 i 4 -ind od 0
@@ -121,7 +121,7 @@ Graph *load_graph(const char *filename) {
     int size3 = arrays[3]->size;
     if (arrays[4]->data[size4-1] != size3) // jesli liczba w lin3 i lin4 sie nie zgadza
     {
-        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.5");
         fclose(f);
         exit(EXIT_FAILURE);
     }
@@ -130,7 +130,7 @@ Graph *load_graph(const char *filename) {
     {
         if (arrays[4]->data[i] > arrays[4]->data[i + 1])
         {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.");
+            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.6");
             fclose(f);
             exit(EXIT_FAILURE);
         }

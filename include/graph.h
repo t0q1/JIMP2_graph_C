@@ -17,5 +17,6 @@ void addEdge(Graph* graph, int u, int v);
 void printGraph(Graph * graph);
 void freeGraph(Graph * graph);
 void TestGraph();
+int * partition(Graph * g);
 
 #endif

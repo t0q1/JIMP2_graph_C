@@ -120,11 +120,34 @@ int * partition(Graph * g)
                 }
             }
         }
-
-        return part;
     }
+    return part;
 
 }
+
+// void recursive_partition(Graph* graph, int* part, int current_part, int num_parts, int margin_percent) {
+//     if (num_parts == 1) return;
+
+//     // Podział current_part na 2
+//     int* sub_part = partition_2way(graph, margin_percent); // Zwraca tablicę 0/1
+
+//     // Aktualizuj globalną tablicę `part` na np. 2*current_part i 2*current_part+1
+//     for (int i = 0; i < graph->num_vertices; i++) {
+//         if (part[i] == current_part) {
+//             part[i] = (sub_part[i] == 0) ? (2 * current_part) : (2 * current_part + 1);
+//         }
+//     }
+
+//     // Rekurencyjnie wywołaj na dwóch podgrafach
+//     // (trzeba wyciągnąć te podgrafy z oryginalnego grafu!)
+//     Graph* g0 = extract_subgraph(graph, part, 2 * current_part);
+//     Graph* g1 = extract_subgraph(graph, part, 2 * current_part + 1);
+
+//     recursive_partition(g0, part, 2 * current_part, num_parts / 2, margin_percent);
+//     recursive_partition(g1, part, 2 * current_part + 1, num_parts / 2, margin_percent);
+
+//     // zwolnij g0, g1
+// }
 
 void TestGraph()
 {
