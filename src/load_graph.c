@@ -88,7 +88,6 @@ Graph *load_graph(const char *filename) {
     if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
     {
         fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.2");
-        fclose(f);
         exit(EXIT_FAILURE);
     }
     
@@ -97,7 +96,6 @@ Graph *load_graph(const char *filename) {
         if (arrays[2]->data[i] > arrays[2]->data[i + 1])
         {
             fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.3");
-            fclose(f);
             exit(EXIT_FAILURE);
         }
     }
@@ -107,8 +105,8 @@ Graph *load_graph(const char *filename) {
         if (arrays[1]->data[i] > max_num)
         {   
             // printf("%d\n", arrays[2]->data[i]);
+            fprintf(stderr, "\ny4:%d, %d\n", arrays[1]->data[i], max_num);
             fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.4");
-            fclose(f);
             exit(EXIT_FAILURE);
         }
     }
@@ -116,34 +114,37 @@ Graph *load_graph(const char *filename) {
     Graph * graph = createGraph(size1);
 
     // linijka 3 i 4 -ind od 0
-
+    
+    
     int size4 = arrays[4]->size;
     int size3 = arrays[3]->size;
-    if (arrays[4]->data[size4-1] != size3) // jesli liczba w lin3 i lin4 sie nie zgadza
-    {
-        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.5");
-        fclose(f);
-        exit(EXIT_FAILURE);
-    }
+
+    // tego jednak nie trzeba
+    // if (arrays[4]->data[size4-1] != size3) // jesli liczba w lin3 i lin4 sie nie zgadza
+    // {
+    //     fprintf(stderr, "\ny5:%d, %d\n", arrays[4]->data[size4-1], size3);
+    //     fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.5");
+    //     exit(EXIT_FAILURE);
+    // }
 
     for ( int i = 0; i < size4 - 1; i++) // jesli sa malejace
     {
         if (arrays[4]->data[i] > arrays[4]->data[i + 1])
         {
             fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.6");
-            fclose(f);
             exit(EXIT_FAILURE);
         }
     }
     
-    
-
     int prev = 0;
+    int nxt = 0;
     int first_node = -1;
-    for(int i = 0; i < size4; i++)
+    for(int i = 0; i <= size4; i++)
     {
+        nxt = arrays[4]->data[i];
+        if (i == size4) nxt = size3;
 
-        for(int j = prev; j < arrays[4]->data[i]; j++)
+        for(int j = prev; j < nxt; j++)
         {
             if (j == prev) 
             {
