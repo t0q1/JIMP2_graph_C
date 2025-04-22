@@ -17,6 +17,6 @@ void printArray(DynamicArray *arr);
 
 Graph *load_graph(const char *filename);
 
-void save_graph(Graph * g, const char *filename, bool terminal, bool binary);
+void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int valid_division);
 
 #endif //FILE_GRAPH_H

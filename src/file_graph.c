@@ -151,7 +151,39 @@ Graph *load_graph(const char *filename) {
     return graph;
 }
 
-void save_graph(Graph * g, const char *filename, bool terminal, bool binary)
+void reverse(char *bin, int left, int right) { // odwraca tablice
+	
+    while (left < right) {
+        char temp = bin[left];
+        bin[left] = bin[right];
+        bin[right] = temp;
+        left++;
+        right--;
+    }
+}
+
+char* decToBinary(int n) { // przeksztalcanie liczby calkowitej na postac binarna
+    
+	char* bin = malloc(33 * sizeof(char));
+    
+    for (int i = 0; i < 32; i++)
+        bin[i] = '0';
+    bin[32] = '\0';
+
+    if (n == 0) return bin;
+
+    int index = 0;
+    while (n > 0) {
+        int bit = n % 2;
+        bin[index++] = '0' + bit;
+        n /= 2;
+    }
+
+	reverse(bin, 0, 31);
+  	return bin;
+}
+
+void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int valid_division)
 {
     //wczytanie pliku
     FILE *out = terminal ? stdout : fopen(filename, "w");
@@ -162,21 +194,25 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary)
         exit(EXIT_FAILURE);
     }
 
+    if (!binary) fprintf(out, "%d\n", valid_division);
     
     // wypiswanie pierwszych 3 linijek
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < arrays[i]->size; j++)
-        {
-            fprintf(out, "%d", arrays[i]->data[j]);
+        {   
+            int val = arrays[i]->data[j];
+
+            binary ? fprintf(out, "%s", decToBinary(val)) : fprintf(out, "%d", val);
+            
             if (j != arrays[i]->size - 1)
-                fprintf(out, ";");
+                binary ? fprintf(out, "11111111111111111111111111111110") : fprintf(out, ";");
             else 
-                fprintf(out, "\n");
+                binary ? fprintf(out, "11111111111111111111111111111111") :fprintf(out, "\n");
         }
     }
 
-    DynamicArray * lengths = malloc(sizeof(DynamicArray));
+    DynamicArray * lengths = malloc(sizeof(DynamicArray)); // tablica do przechowania liczbe sasiadow kolejnych wezlow (potrzebna do linijki 5)
     initArray(lengths, 200);
     int last_index = 0;
     
@@ -185,15 +221,15 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary)
     {   
         if (g->adj[i] != NULL)
         {   
-            if (i == 0) fprintf(out, "%d", i);
-            else fprintf(out, ";%d", i);
+            if (i == 0) binary ? fprintf(out, "%s", decToBinary(i)) : fprintf(out, "%d", i);
+            else  binary ? fprintf(out, "11111111111111111111111111111110%s", decToBinary(i)) : fprintf(out, ";%d", i);
 
             Node * node = g->adj[i];
             int counter = 0;
             while (node)
             {
                 counter++;
-                fprintf(out, ";%d", node->vertex);
+                binary ? fprintf(out, "11111111111111111111111111111110%s", decToBinary(node->vertex)) : fprintf(out, ";%d", node->vertex);
                 node = node->next;
             }
             append(lengths, counter);
@@ -204,18 +240,20 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary)
 
     //wypisanie linijki 5
 
-    printArray(lengths);
+    // printArray(lengths);
     
     int prev = 0;
-    fprintf(out, "\n%d", prev);
+    binary ? fprintf(out, "11111111111111111111111111111111%s", decToBinary(prev)) : fprintf(out, "\n%d", prev);
 
     for (int i = 0; i < last_index; i++)
     {   
         if (lengths->data[i])
         {
             prev += lengths->data[i] + 1;
-            fprintf(out, ";%d", prev);
+            binary ? fprintf(out, "11111111111111111111111111111110%s", decToBinary(prev)) : fprintf(out, ";%d", prev);
         }
         
     }
+    freeArray(lengths);
+    fclose(out);
 }
