@@ -8,6 +8,8 @@ typedef struct n{
 
 typedef struct {
     int n;
+    int start;
+    int parent;
     Node ** adj;
 } Graph;
 
