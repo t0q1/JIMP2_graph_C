@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "../include/graph.h"
 #include "../include/file_graph.h"
@@ -32,8 +31,6 @@ void printArray(DynamicArray *arr) {
     printf("\n");
 }
 
-
-DynamicArray *arrays[5];
 Graph *load_graph(const char *filename) {
     FILE *f = fopen(filename, "r");
     if (!f) {
@@ -45,7 +42,7 @@ Graph *load_graph(const char *filename) {
     size_t len = 0;
     size_t r;
     int line_num = 0;
-    
+    DynamicArray *arrays[5];
     for(int i = 0; i < 5; i++)
     {
         arrays[i] = malloc(sizeof(DynamicArray));
@@ -88,7 +85,13 @@ Graph *load_graph(const char *filename) {
     // linijka 1 i 2 --indeksowane od 0 
     int size2 = arrays[2]->size;
     int size1 = arrays[1]->size;
-
+    // tego chyba nie trzeba
+    // if (arrays[2]->data[size2-1] != size1) // jesli liczba w lin1 i lin2 sie nie zgadza
+    // {
+    //     fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.2");
+    //     exit(EXIT_FAILURE);
+    // }
+    
     for ( int i = 0; i < size2 - 1; i++) // jesli sa malejace
     {
         if (arrays[2]->data[i] > arrays[2]->data[i + 1])
@@ -118,6 +121,14 @@ Graph *load_graph(const char *filename) {
     // linijka 3 i 4 -ind od 0
     int size4 = arrays[4]->size;
     int size3 = arrays[3]->size;
+
+    // tego chyba nie trzeba
+    // if (arrays[4]->data[size4-1] != size3) // jesli liczba w lin3 i lin4 sie nie zgadza
+    // {
+    //     fprintf(stderr, "\ny5:%d, %d\n", arrays[4]->data[size4-1], size3);
+    //     fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.5");
+    //     exit(EXIT_FAILURE);
+    // }
 
     for ( int i = 0; i < size4 - 1; i++) // jesli sa malejace
     {
@@ -149,74 +160,4 @@ Graph *load_graph(const char *filename) {
         prev = arrays[4]->data[i];
     }
     return graph;
-}
-
-void save_graph(Graph * g, const char *filename, bool terminal, bool binary)
-{
-    //wczytanie pliku
-    FILE *out = terminal ? stdout : fopen(filename, "w");
-
-    if (out == NULL) 
-    {
-        fprintf(stderr, "Blad: Nie udalo sie otworzyc pliku wyjsciowego o podanej sciezkce (%s). Przerywam dzialanie.\n", filename);
-        exit(EXIT_FAILURE);
-    }
-
-    
-    // wypiswanie pierwszych 3 linijek
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < arrays[i]->size; j++)
-        {
-            fprintf(out, "%d", arrays[i]->data[j]);
-            if (j != arrays[i]->size - 1)
-                fprintf(out, ";");
-            else 
-                fprintf(out, "\n");
-        }
-    }
-
-    DynamicArray * lengths = malloc(sizeof(DynamicArray));
-    initArray(lengths, 200);
-    int last_index = 0;
-    
-    // wypisanie linijki 4
-    for (int i = 0; i < g->n; i++)
-    {   
-        if (g->adj[i] != NULL)
-        {   
-            if (i == 0) fprintf(out, "%d", i);
-            else fprintf(out, ";%d", i);
-
-            Node * node = g->adj[i];
-            int counter = 0;
-            while (node)
-            {
-                counter++;
-                fprintf(out, ";%d", node->vertex);
-                node = node->next;
-            }
-            append(lengths, counter);
-            last_index = i;
-        }
-        else append(lengths, 0);
-    }
-
-    //wypisanie linijki 5
-
-    printArray(lengths);
-    
-    int prev = 0;
-    fprintf(out, "\n%d", prev);
-
-    for (int i = 0; i < g->n; i++)
-    {   
-        if (lengths->data[i] && i != last_index)
-        {
-            prev += lengths->data[i] + 1;
-            fprintf(out, ";%d", prev);
-        }
-        
-    }
-
 }
