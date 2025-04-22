@@ -209,14 +209,13 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary)
     int prev = 0;
     fprintf(out, "\n%d", prev);
 
-    for (int i = 0; i < g->n; i++)
+    for (int i = 0; i < last_index; i++)
     {   
-        if (lengths->data[i] && i != last_index)
+        if (lengths->data[i])
         {
             prev += lengths->data[i] + 1;
             fprintf(out, ";%d", prev);
         }
         
     }
-
 }

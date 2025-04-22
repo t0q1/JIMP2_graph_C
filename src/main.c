@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "../include/graph.h"
-#include "../include/load_graph.h"
+#include "../include/file_graph.h"
 
 int main(int argc, char ** argv)
 {   
@@ -56,21 +57,24 @@ int main(int argc, char ** argv)
     Graph *graph = load_graph(argv[1]);
     printGraph(graph);
     
-    ListOfGraphs * result = malloc(sizeof(ListOfGraphs));
-    for (int i = 0; i < N + 1; i++)
-    {
-        result->subgraphs[i] = NULL;
-    }
-    printf("\nyolo\n");
-    recursive_partition(graph, N, M, result);
+    // ListOfGraphs * result = malloc(sizeof(ListOfGraphs));
+    // for (int i = 0; i < N + 1; i++)
+    // {
+    //     result->subgraphs[i] = NULL;
+    // }
+    // printf("\nyolo\n");
+    // recursive_partition(graph, N, M, result);
     
-    printf("\nyolo\n");
+    // printf("\nyolo\n");
 
-    for (int i = 0; i < N + 1; i++)
-    {
-        if (result->subgraphs[i] != NULL) printGraph(result->subgraphs[i]);
+    // for (int i = 0; i < N + 1; i++)
+    // {
+    //     if (result->subgraphs[i] != NULL) printGraph(result->subgraphs[i]);
 
-        printf("\n-\n");
-    }
+    //     printf("\n-\n");
+    // }
+
+    save_graph(graph, output_filename, terminal_output, binary_output);
+    
     return EXIT_SUCCESS;
 }
