@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
         result->subgraphs[i] = NULL;
     }
     printf("\nyolo\n");
-    recursive_partition(graph, N, M, result);
+    recursive_partition(&graph, N, M, result);
     printf("\nyolo\n");
 
     for (int i = 0; i < N + 1; i++)
@@ -89,6 +89,8 @@ int main(int argc, char **argv) {
         if (result->subgraphs[i] != NULL) printGraph(result->subgraphs[i]);
         printf("\n-\n");
     }
+
+    printGraph(graph);
 
     return EXIT_SUCCESS;
 }
