@@ -55,6 +55,22 @@ int main(int argc, char ** argv)
     // wczytywanie grafu z pliku
     Graph *graph = load_graph(argv[1]);
     printGraph(graph);
+    
+    ListOfGraphs * result = malloc(sizeof(ListOfGraphs));
+    for (int i = 0; i < N + 1; i++)
+    {
+        result->subgraphs[i] = NULL;
+    }
+    printf("\nyolo\n");
+    recursive_partition(graph, N, M, result);
+    
+    printf("\nyolo\n");
 
+    for (int i = 0; i < N + 1; i++)
+    {
+        if (result->subgraphs[i] != NULL) printGraph(result->subgraphs[i]);
+
+        printf("\n-\n");
+    }
     return EXIT_SUCCESS;
 }

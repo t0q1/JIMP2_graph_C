@@ -24,5 +24,5 @@ void printGraph(Graph * graph);
 void freeGraph(Graph * graph);
 void TestGraph();
 int * partition(Graph * g);
-
+void recursive_partition(Graph *g, int k, double margin_percent, ListOfGraphs *result);
 #endif
