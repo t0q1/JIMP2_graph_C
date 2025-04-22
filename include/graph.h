@@ -12,7 +12,7 @@ typedef struct {
 } Graph;
 
 typedef struct {
-    Graph *subgraphs[500];
+    Graph *subgraphs[1000];
     int count;
 } ListOfGraphs;
 

@@ -5,14 +5,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-Node *createNode(int vertex) {
+Node *createNode(int vertex) { // tworzy wierzcholek
     Node * newNode = malloc(sizeof(Node));
     newNode->vertex = vertex;
     newNode->next = NULL;
     return newNode;
 }
 
-Graph *createGraph(int n) {
+Graph *createGraph(int n) { // tworzy graf
     Graph * graph = malloc(sizeof(Graph));
     graph->n = n;
 
@@ -24,7 +24,7 @@ Graph *createGraph(int n) {
     return graph;
 }
 
-void addEdge(Graph* graph, int u, int v) {
+void addEdge(Graph* graph, int u, int v) { // laczy dwa wierzcholki
     Node* newNode = createNode(v);
     newNode->next = graph->adj[u];
     graph->adj[u] = newNode;
@@ -34,7 +34,7 @@ void addEdge(Graph* graph, int u, int v) {
     graph->adj[v] = newNode;
 }
 
-void printGraph(Graph *graph) {
+void printGraph(Graph *graph) { // wypisuje graf
     for (int i = 0; i < graph->n; i++)
     {
         Node * temp = graph->adj[i];
@@ -48,7 +48,7 @@ void printGraph(Graph *graph) {
     }
 }
 
-void freeGraph(Graph * graph) {
+void freeGraph(Graph * graph) { // zwalnia pamiec grafu
     for (int i = 0; i < graph->n; i++) {
         Node * temp = graph->adj[i];
         while (temp) {
@@ -61,7 +61,7 @@ void freeGraph(Graph * graph) {
     free(graph);
 }
 
-int * partition(Graph * g)
+int * partition(Graph * g) // dokonuje podzialu grafu na 2 czesci zachowujac minimalna liczbe przeciec
 {
     int n = g->n;
     int *part = malloc(n * sizeof(int));
@@ -125,61 +125,89 @@ int * partition(Graph * g)
 
 }
 
-// bool margin_ok(int sizeA, int sizeB, int margin_percent) {
-//     int total = sizeA + sizeB;
-//     int diff = (int)(abs(sizeA - sizeB) / (double)total * 200);
-//     return diff <= margin_percent;
-// }
+bool margin_ok(int sizeA, int sizeB, int margin_percent) { // sprawdza czy utworzone grafy mieszcza sie w marginesie
+    int total = sizeA + sizeB;
+    int diff = (int)(abs(sizeA - sizeB) / (double)total * 200);
+    return diff <= margin_percent;
+}
 
-// void add_partition(ListOfGraphs *list, Graph *g) {
-//     if (list->count < 500) {
-//         list->subgraphs[list->count++] = g;
-//     }
-// }
+void add_partition(ListOfGraphs *list, Graph *g) { // dodaje partycje do listy podgrafow
+    if (list->count < 1000) { // 1000 bo taka jest max dlugosc tablicy
+        list->subgraphs[list->count++] = g;
+    }
+}
 
-// int find_largest_partition(ListOfGraphs *list) {
-//     int max_index = -1;
-//     int max_size = -1;
-//     for (int i = 0; i < list->count; i++) {
-//         int size = count_vertices(list->subgraphs[i]);
-//         if (size > max_size) {
-//             max_size = size;
-//             max_index = i;
-//         }
-//     }
-//     return max_index;
-// }
 
-// void recursive_partition(Graph *g, int k, double margin_percent, ListOfGraphs *result) {
-//     add_partition(result, g);
+int find_largest_partition(ListOfGraphs *list) { // zwraca index najwieszkego podgrafu
+    int max_index = -1;
+    int max_size = -1;
+    for (int i = 0; i < list->count; i++) {
+        int size = list->subgraphs[i]->n; // liczba wierzcholkow
+        if (size > max_size) {
+            max_size = size;
+            max_index = i;
+        }
+    }
+    return max_index;
+}
 
-//     while (result->count < k) {
-//         int index = find_largest_partition(result);
-//         if (index == -1) break;
+Graph * extract_subgraph(Graph *g, int * part, int n, int partition_value) /* tworzy podgraf - niestety tym sposobem kazdy 
+podgraf ma tablice wierzcholkow rowna n, czyli tyle ile graf glowny*/
+{
+    // Graph *subgraph = createGraph(n);
+    // for (int i = 0; i < n; i++)
+    // {
+    //     if (part[i] == partition_value)
+    //     {
+    //         Node * neighbor = g->adj[i];
+    //         while (neighbor != NULL)
+    //         {
+    //             int v = neighbor->vertex;
+    //             if (part[v] == partition_value) addEdge(subgraph, i, v);
+    //         }
+    //         neighbor = neighbor->next;
+    //     }
+    // }
+    // return subgraph;
+}
 
-//         Graph *to_split = result->subgraphs[index];
-//         int n = to_split->n;
-//         int *part = partition(to_split); 
+int count(int* array, int n, int value) // zlicza liczbe elementow o podanej wartosci w tablicy
+{
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        if (array[i] == value) {
+            count++;
+        }
+    }
+    return count;
+}
 
-//         Graph *A = extract_subgraph(to_split, part, 0);
-//         Graph *B = extract_subgraph(to_split, part, 1);
+void recursive_partition(Graph *g, int k, double margin_percent, ListOfGraphs *result) {
+    add_partition(result, g);
 
-//         int sizeA = count_vertices(A);
-//         int sizeB = count_vertices(B);
+    while (result->count < k) {
+        int index = find_largest_partition(result);
+        if (index == -1) break;
 
-//         if (!margin_ok(sizeA, sizeB, margin_percent)) {
-//             free(A);
-//             free(B);
-//             break; // nie udalo sie podzielic, konczymy
-//         }
+        Graph *to_split = result->subgraphs[index];
+        int n = to_split->n;
+        int *part = partition(to_split); 
 
-//         // Podmieniamy stara partycje dwiema nowymi
-//         result->subgraphs[index] = A;
-//         add_partition(result, B);
+        int sizeA = count(part, n, 0);
+        int sizeB = count(part, n, 1);
 
-//         free(part);
-//     }
-// } 
+        if (!margin_ok(sizeA, sizeB, margin_percent)) break; // nie udalo sie podzielic
+
+        Graph *A = extract_subgraph(to_split, part, n, 0);
+        Graph *B = extract_subgraph(to_split, part, n, 1);
+
+        // Podmieniamy stara partycje dwiema nowymi
+        result->subgraphs[index] = A;
+        add_partition(result, B);
+
+        free(part);
+    }
+} 
 
 void TestGraph()
 {
