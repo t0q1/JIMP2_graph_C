@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <limits.h>
 
 Node *createNode(int vertex) { // tworzy wierzcholek
     Node * newNode = malloc(sizeof(Node));
@@ -15,6 +16,8 @@ Node *createNode(int vertex) { // tworzy wierzcholek
 Graph *createGraph(int n) { // tworzy graf
     Graph * graph = malloc(sizeof(Graph));
     graph->n = n;
+    graph->start = 0;
+    graph->parent = 0;
 
     graph->adj = malloc(n * sizeof(Node *));
 
@@ -38,10 +41,10 @@ void printGraph(Graph *graph) { // wypisuje graf
     for (int i = 0; i < graph->n; i++)
     {
         Node * temp = graph->adj[i];
-        printf("\nWierzcholek %d: ", i);
+        printf("Wierzcholek %d: ", i + graph->parent);
         while (temp)
         {
-            printf("%d -> ", temp->vertex);
+            printf("%d -> ", temp->vertex + graph->parent);
             temp = temp->next;
         }
         printf("NULL\n");
@@ -151,30 +154,57 @@ int find_largest_partition(ListOfGraphs *list) { // zwraca index najwieszkego po
     return max_index;
 }
 
-Graph * extract_subgraph(Graph *g, int * part, int n, int partition_value) /* tworzy podgraf - niestety tym sposobem kazdy 
-podgraf ma tablice wierzcholkow rowna n, czyli tyle ile graf glowny*/
-{   
-    printf("yy1\n");
-    Graph *subgraph = createGraph(n);
-    printf("yy2\n");
-    for (int i = 0; i < n; i++)
-    {
-        printf("yy3\n");
+int get_min_index(int *part, int n, int partition_value) {
+    int min = n;
+    for (int i = n - 1; i >= 0; i--)
         if (part[i] == partition_value)
-        {
-            printf("yy4\n");
+            min = i;
+    return min;
+}
+
+int get_max_index(int *part, int n, int partition_value) {
+    int max = 0;
+    for (int i = 0; i < n; i++)
+        if (part[i] == partition_value)
+            max = i;
+    return max;
+}
+
+Graph *extract_subgraph(Graph *g, int *part, int n, int partition_value) { // tworzy podgraf
+    int difference = get_max_index(part, n, partition_value) - get_min_index(part, n, partition_value);
+
+    Graph *subgraph = createGraph(difference + 1);
+
+    for (int i = 0; i < n; i++) {
+        if (part[i] == partition_value) {
+            Node *neighbor = g->adj[i];
+            while (neighbor) {
+                int v = neighbor->vertex;
+                if (part[v] == partition_value)
+                    addEdge(subgraph, i - g->start, v - g->start);
+                neighbor = neighbor->next;
+            }
+        }
+    }
+    subgraph->parent = !partition_value ? g->parent : g->parent + difference;
+    printf("g-parent---%d\n", subgraph->parent);
+    g->start += difference + 1;
+    return subgraph;
+}
+
+Graph *oextract_subgraph(Graph *g, int * part, int n, int partition_value) /* tworzy podgraf - niestety tym sposobem kazdy
+podgraf ma tablice wierzcholkow rowna n, czyli tyle ile graf glowny*/
+{
+    Graph *subgraph = createGraph(n);
+    for (int i = 0; i < n; i++) {
+        if (part[i] == partition_value) {
             Node * neighbor = g->adj[i];
-            printf("yy5\n");
-            while (neighbor != NULL)
-            {
-                printf("zz1\n");
+            while (neighbor != NULL) {
                 int v = neighbor->vertex;
                 if (part[v] == partition_value) addEdge(subgraph, i, v);
 
                 neighbor = neighbor->next;
             }
-            printf("yy6\n");
-            
         }
     }
     return subgraph;
@@ -192,25 +222,20 @@ int count(int* array, int n, int value) // zlicza liczbe elementow o podanej war
 }
 
 void recursive_partition(Graph *g, int k, double margin_percent, ListOfGraphs *result) {
-    printf("xd1\n");
     add_partition(result, g);
-    printf("xd2\n");
     while (result->count < k + 1) {
         int index = find_largest_partition(result);
         if (index == -1) break;
 
-        printf("xd3\n");
-
         Graph *to_split = result->subgraphs[index];
         int n = to_split->n;
-        int *part = partition(to_split); 
-
-        printf("xd4\n");
+        printf("Największy do podziału: i-%d, w-%d\n", index, n);
+        int *part = partition(to_split);
 
         int sizeA = count(part, n, 0);
         int sizeB = count(part, n, 1);
-
-        printf("xd5\n");
+        printf("sizeA: %d\n", sizeA);
+        printf("sizeB: %d\n", sizeB);
 
         if (!margin_ok(sizeA, sizeB, margin_percent)) 
         {
@@ -218,18 +243,18 @@ void recursive_partition(Graph *g, int k, double margin_percent, ListOfGraphs *r
             break; // nie udalo sie podzielic
         }
 
-        printf("xd6\n");
-
         Graph *A = extract_subgraph(to_split, part, n, 0);
         Graph *B = extract_subgraph(to_split, part, n, 1);
 
-        printf("xd7\n");
+        printf("------------------------------\n\n\n");
+        printGraph(A);
+        printf("\n--AABB--\n");
+        printGraph(B);
+        printf("------------------------------\n\n\n");
 
         // Podmieniamy stara partycje dwiema nowymi
         result->subgraphs[index] = A;
         add_partition(result, B);
-
-        printf("xd8\n");
 
         free(part);
     }

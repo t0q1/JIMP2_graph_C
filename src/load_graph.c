@@ -116,8 +116,6 @@ Graph *load_graph(const char *filename) {
     }
     Graph * graph = createGraph(size1);
 
-
-
     // linijka 3 i 4 -ind od 0
     int size4 = arrays[4]->size;
     int size3 = arrays[3]->size;
