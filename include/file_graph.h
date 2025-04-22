@@ -1,8 +1,5 @@
-#ifndef LOAD_GRAPH_H
-#define LOAD_GRAPH_H
-
-#define BUFSIZE 8192
-#define MAXLINES 100000
+#ifndef FILE_GRAPH_H
+#define FILE_GRAPH_H
 
 typedef struct {
     int *data;      // wskaźnik na dane
@@ -20,4 +17,6 @@ void printArray(DynamicArray *arr);
 
 Graph *load_graph(const char *filename);
 
-#endif //LOAD_GRAPH_H
+void save_graph(Graph * g, const char *filename, bool terminal, bool binary);
+
+#endif //FILE_GRAPH_H
