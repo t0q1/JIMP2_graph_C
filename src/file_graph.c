@@ -183,10 +183,80 @@ char* decToBinary(int n) { // przeksztalcanie liczby calkowitej na postac binarn
   	return bin;
 }
 
-void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int valid_division)
+void print(bool terminal, bool file_output, bool binary, FILE *f, const char * style, int argument)
+{   
+    char * b_semicolon = "11111111111111111111111111111110";
+    char * b_newline = "11111111111111111111111111111111";
+
+    if (binary) {
+
+        
+        
+        char * new_style = calloc(100, sizeof(char));
+        char * head_new_style = new_style;
+        
+        while (*style) { // przeksztalcenie formatu na ten zgodny z binarnym
+            if (*style == ';') {
+
+                for (int i = 0; i < 32; i++) {
+                    *new_style = b_semicolon[i]; 
+                    new_style++;
+                } 
+
+            }
+            else if (*style == '\n') {
+
+                for (int i = 0; i < 32; i++) {
+                    *new_style = b_newline[i]; 
+                    new_style++;
+                } 
+
+            }
+            else if (*style == 'd') {
+                *new_style = 's';
+                new_style++;
+            }
+            else {
+                *new_style = *style;
+                new_style++;
+            }
+
+            style++;
+        }   
+        
+        char * new_val = decToBinary(argument); // przeksztalcenie argumentu
+        
+        if (terminal){ // wypisuje gdy terminal
+            argument != -1 ? printf(head_new_style, new_val) : printf(head_new_style); // w zaleznosci od argumentu -> odpowiendie wypisanie
+        }
+
+        if (file_output){ // wypisuje gdy plik
+            argument != -1 ? fprintf(f, head_new_style, new_val) : fprintf(f, head_new_style);
+        }
+        free(head_new_style);
+    }
+    else {
+
+
+        if (terminal){ // wypisuje gdy terminal
+            argument != -1 ? printf(style, argument) : printf(style);
+        }
+        
+
+        if (file_output){ // wypisuje gdy plik
+            argument != -1 ? fprintf(f, style, argument) : fprintf(f, style);;
+        }
+
+        
+    }
+    
+}
+
+
+void save_graph(Graph * g, const char *filename, bool terminal_output, bool file_output, bool binary, int valid_division)
 {
     //wczytanie pliku
-    FILE *out = terminal ? stdout : fopen(filename, "w");
+    FILE *out = fopen(filename, "w");
 
     if (out == NULL) 
     {
@@ -194,7 +264,7 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int
         exit(EXIT_FAILURE);
     }
 
-    if (!binary) fprintf(out, "%d\n", valid_division);
+    if (!binary) print(terminal_output, file_output, binary, out, "%d\n", valid_division);
     
     // wypiswanie pierwszych 3 linijek
     for (int i = 0; i < 3; i++)
@@ -202,13 +272,13 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int
         for (int j = 0; j < arrays[i]->size; j++)
         {   
             int val = arrays[i]->data[j];
-
-            binary ? fprintf(out, "%s", decToBinary(val)) : fprintf(out, "%d", val);
+            
+            print(terminal_output, file_output, binary, out, "%d", val);
             
             if (j != arrays[i]->size - 1)
-                binary ? fprintf(out, "11111111111111111111111111111110") : fprintf(out, ";");
+                print(terminal_output, file_output, binary, out, ";", -1);
             else 
-                binary ? fprintf(out, "11111111111111111111111111111111") :fprintf(out, "\n");
+                print(terminal_output, file_output, binary, out, "\n", -1);
         }
     }
 
@@ -221,15 +291,15 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int
     {   
         if (g->adj[i] != NULL)
         {   
-            if (i == 0) binary ? fprintf(out, "%s", decToBinary(i)) : fprintf(out, "%d", i);
-            else  binary ? fprintf(out, "11111111111111111111111111111110%s", decToBinary(i)) : fprintf(out, ";%d", i);
+            if (i == 0) print(terminal_output, file_output, binary, out, "%d", i);
+            else  print(terminal_output, file_output, binary, out, ";%d", i);
 
             Node * node = g->adj[i];
             int counter = 0;
             while (node)
             {
                 counter++;
-                binary ? fprintf(out, "11111111111111111111111111111110%s", decToBinary(node->vertex)) : fprintf(out, ";%d", node->vertex);
+                print(terminal_output, file_output, binary, out, ";%d", node->vertex);
                 node = node->next;
             }
             append(lengths, counter);
@@ -239,18 +309,16 @@ void save_graph(Graph * g, const char *filename, bool terminal, bool binary, int
     }
 
     //wypisanie linijki 5
-
-    // printArray(lengths);
     
     int prev = 0;
-    binary ? fprintf(out, "11111111111111111111111111111111%s", decToBinary(prev)) : fprintf(out, "\n%d", prev);
+    print(terminal_output, file_output, binary, out, "\n%d", prev);
 
     for (int i = 0; i < last_index; i++)
     {   
         if (lengths->data[i])
         {
             prev += lengths->data[i] + 1;
-            binary ? fprintf(out, "11111111111111111111111111111110%s", decToBinary(prev)) : fprintf(out, ";%d", prev);
+            print(terminal_output, file_output, binary, out, ";%d", prev);
         }
         
     }
