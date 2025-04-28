@@ -66,7 +66,7 @@ Graph *load_graph(const char *filename) {
             
             if (*end != '\0' || num < 0)
             {
-                fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.1");
+                fprintf(stderr, "Blad: Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.\n");
                 fclose(f);
                 exit(EXIT_FAILURE);
             }
@@ -93,7 +93,7 @@ Graph *load_graph(const char *filename) {
     {
         if (arrays[2]->data[i] > arrays[2]->data[i + 1])
         {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.3");
+            fprintf(stderr, "Blad: Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -102,13 +102,13 @@ Graph *load_graph(const char *filename) {
     {
         if (arrays[2]->data[i + 1] - arrays[2]->data[i + 1] > max_num)
         {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.4");
+            fprintf(stderr, "Blad: Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.\n");
             exit(EXIT_FAILURE);
         }
     }
     if (arrays[2]->data[size2 - 1] < size1 && size1 - arrays[2]->data[size2 - 1] > max_num)
     {
-        fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.4");
+        fprintf(stderr, "Blad: Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.\n");
         exit(EXIT_FAILURE);
     }
     Graph * graph = createGraph(size1);
@@ -123,7 +123,7 @@ Graph *load_graph(const char *filename) {
     {
         if (arrays[4]->data[i] > arrays[4]->data[i + 1])
         {
-            fprintf(stderr, "Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.6");
+            fprintf(stderr, "Blad: Dane w pliku przedstawiajace graf sa niepoprawne. Przerywam dzialanie.\n");
             exit(EXIT_FAILURE);
         }
     }

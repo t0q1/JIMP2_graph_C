@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <limits.h>
 
 #include "../include/getopt.h"
 #include "../include/graph.h"
@@ -28,6 +29,23 @@ bool binary_output = false;
 bool terminal_output = false;
 bool file_output = false;
 char *output_filename = "wynik.txt";
+
+int safe_atoi(const char *text) {
+    char *endptr;
+    long value = strtol(text, &endptr, 10);
+
+    if (value < INT_MIN || value > INT_MAX) {
+        fprintf(stderr, "Blad: Liczba podzieleń grafu została niepoprawnie zdefiniowana. Przerywam działanie.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (*endptr != '\0') {
+        fprintf(stderr, "Blad: Liczba podzieleń grafu została niepoprawnie zdefiniowana. Przerywam działanie.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return (int)value;
+}
 
 int main(int argc, char **argv) {
     char opt;
@@ -59,13 +77,13 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    int n = vargc > SYS+1 ? atoi(vargv[SYS+1]) : 1;
+    int n = vargc > SYS+1 ? safe_atoi(vargv[SYS+1]) : 1;
     if (n < 1) {
         fprintf(stderr, "Blad: Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
 
-    int m = vargc > SYS+2 ? atoi(vargv[SYS+2]) : 10;
+    int m = vargc > SYS+2 ? safe_atoi(vargv[SYS+2]) : 10;
     if (m < 0 || m > 100) {
         fprintf(stderr, "Blad: Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
