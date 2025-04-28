@@ -78,11 +78,6 @@ Graph *load_graph(const char *filename) {
     }
     fclose(f); // ZAMYKAM PLIK!!!
 
-    for(int i =0; i< 5; i++)
-    {
-        printArray(arrays[i]);
-    }
-
     int max_num = arrays[0]->data[0];
 
     // linijka 1 i 2 --indeksowane od 0 
@@ -112,8 +107,6 @@ Graph *load_graph(const char *filename) {
         exit(EXIT_FAILURE);
     }
     Graph * graph = createGraph(size1);
-
-
 
     // linijka 3 i 4 -ind od 0
     int size4 = arrays[4]->size;
@@ -183,14 +176,10 @@ char* decToBinary(int n) { // przeksztalcanie liczby calkowitej na postac binarn
   	return bin;
 }
 
-void print(bool terminal, bool file_output, bool binary, FILE *f, const char * style, int argument)
-{
-    char * b_semicolon = "11111111111111111111111111111110";
-    char * b_newline = "11111111111111111111111111111111";
-
+void print(bool terminal, bool file_output, bool binary, FILE *f, const char *style, int argument) {
     if (binary) {
-
-
+        char * b_semicolon = "11111111111111111111111111111110";
+        char * b_newline = "11111111111111111111111111111111";
 
         char * new_style = calloc(100, sizeof(char));
         char * head_new_style = new_style;
@@ -226,30 +215,20 @@ void print(bool terminal, bool file_output, bool binary, FILE *f, const char * s
 
         char * new_val = decToBinary(argument); // przeksztalcenie argumentu
 
-        if (terminal){ // wypisuje gdy terminal
+        if (terminal) // wypisuje gdy terminal
             argument != -1 ? printf(head_new_style, new_val) : printf(head_new_style); // w zaleznosci od argumentu -> odpowiendie wypisanie
-        }
 
-        if (file_output){ // wypisuje gdy plik
+        if (file_output) // wypisuje gdy plik
             argument != -1 ? fprintf(f, head_new_style, new_val) : fprintf(f, head_new_style);
-        }
         free(head_new_style);
-    }
-    else {
 
-
-        if (terminal){ // wypisuje gdy terminal
+    } else {
+        if (terminal) // wypisuje gdy terminal
             argument != -1 ? printf(style, argument) : printf(style);
-        }
 
-
-        if (file_output){ // wypisuje gdy plik
-            argument != -1 ? fprintf(f, style, argument) : fprintf(f, style);;
-        }
-
-
+        if (file_output) // wypisuje gdy plik
+            argument != -1 ? fprintf(f, style, argument) : fprintf(f, style);
     }
-
 }
 
 
@@ -264,7 +243,8 @@ void save_graph(Graph * g, const char *filename, bool terminal_output, bool file
         exit(EXIT_FAILURE);
     }
 
-    if (!binary) print(terminal_output, file_output, binary, out, "%d\n", valid_division);
+    if (!binary)
+      print(terminal_output, file_output, binary, out, "%d\n", valid_division);
 
     // wypiswanie pierwszych 3 linijek
     for (int i = 0; i < 3; i++)

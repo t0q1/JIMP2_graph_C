@@ -3,14 +3,14 @@
 
 typedef struct n{
     int vertex;
-    struct n* next;
+    struct n *next;
 } Node;
 
 typedef struct {
     int n;
     int start;
     int parent;
-    Node ** adj;
+    Node **adj;
 } Graph;
 
 typedef struct {
@@ -18,13 +18,9 @@ typedef struct {
     int count;
 } ListOfGraphs;
 
-
-Node *createNode(int vertex);
+void addEdge(Graph* graph, int u, int v);
 Graph *createGraph(int n);
-void addEdge(Graph *graph, int u, int v);
 void printGraph(Graph *graph);
 void freeGraph(Graph *graph);
-void TestGraph();
-int *partition(Graph *g);
-void recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *result);
+int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *result);
 #endif

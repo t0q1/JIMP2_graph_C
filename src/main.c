@@ -96,7 +96,11 @@ int main(int argc, char **argv) {
 
     // wczytywanie grafu z pliku
     Graph *graph = load_graph(vargv[SYS]);
-    printGraph(graph);
-    
+    ListOfGraphs *result = calloc(n, sizeof(ListOfGraphs));
+
+    int division = recursive_partition(&graph, n, m, result);
+
+    save_graph(graph, output_filename, terminal_output, file_output, binary_output, division);
+    freeGraph(graph);
     return EXIT_SUCCESS;
 }
