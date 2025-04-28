@@ -8,21 +8,23 @@ typedef struct n{
 
 typedef struct {
     int n;
+    int start;
+    int parent;
     Node ** adj;
 } Graph;
 
 typedef struct {
-    Graph *subgraphs[500];
+    Graph *subgraphs[1000];
     int count;
 } ListOfGraphs;
 
 
-Node * createNode(int vertex);
-Graph * createGraph(int n);
-void addEdge(Graph* graph, int u, int v);
-void printGraph(Graph * graph);
-void freeGraph(Graph * graph);
+Node *createNode(int vertex);
+Graph *createGraph(int n);
+void addEdge(Graph *graph, int u, int v);
+void printGraph(Graph *graph);
+void freeGraph(Graph *graph);
 void TestGraph();
-int * partition(Graph * g);
-
+int *partition(Graph *g);
+void recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *result);
 #endif

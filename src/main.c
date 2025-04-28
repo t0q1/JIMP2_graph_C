@@ -4,7 +4,7 @@
 
 #include "../include/getopt.h"
 #include "../include/graph.h"
-#include "../include/load_graph.h"
+#include "../include/file_graph.h"
 
 const char *help_menu = "------POMOC------\n"
                             "Argumenty:\n"
@@ -48,7 +48,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (vargc <= 1) {
         fprintf(stderr, "Blad: Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
@@ -71,7 +70,9 @@ int main(int argc, char **argv) {
         file_output = true;
 
     // wczytywanie grafu z pliku
-    Graph *graph = load_graph(vargv[1]);
+    Graph *graph = load_graph(argv[1]);
     printGraph(graph);
+    
+    
     return EXIT_SUCCESS;
 }
