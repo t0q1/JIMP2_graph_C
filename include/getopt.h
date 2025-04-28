@@ -1,7 +1,7 @@
 #ifndef GETOPT_H
 #define GETOPT_H
 
-#define DEFAULT_VECTOR_SIZE 2
+#define DEFAULT_VECTOR_SIZE 4
 
 extern char **fargv; // argumenty flagi
 extern char **vargv; // wektor argumentów bez flag

@@ -1,6 +1,8 @@
 #ifndef FILE_GRAPH_H
 #define FILE_GRAPH_H
 
+#include <stdbool.h>
+
 typedef struct {
     int *data;      // wskaźnik na dane
     int size;       // liczba elementów

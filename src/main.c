@@ -48,12 +48,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    for (int i = 0; i < vargc; i++){
-        printf("xd\n");
-        printf("%s\n", vargv[i]);
-    }
-
-    if (vargc <= 0) {
         fprintf(stderr, "Blad: Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
@@ -75,13 +69,10 @@ int main(int argc, char **argv) {
     if (terminal_output == false)
         file_output = true;
 
-
     // wczytywanie grafu z pliku
     Graph *graph = load_graph(argv[1]);
     printGraph(graph);
     
-
-    save_graph(graph, output_filename, true, true, true, 2);
     
     return EXIT_SUCCESS;
 }
