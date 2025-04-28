@@ -5,7 +5,7 @@
 
 #include "../include/getopt.h"
 #include "../include/graph.h"
-#include "../include/load_graph.h"
+#include "../include/file_graph.h"
 
 const char *help_menu = "------POMOC------\n"
                             "Argumenty:\n"
@@ -54,14 +54,14 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    int N = vargc > 2 ? atoi(vargv[2]) : 1;
-    if (N < 1) {
+    int n = vargc > 2 ? atoi(vargv[2]) : 1;
+    if (n < 1) {
         fprintf(stderr, "Blad: Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
 
-    int M = vargc > 3 ? atoi(vargv[3]) : 10;
-    if (M < 0 || M > 100) {
+    int m = vargc > 3 ? atoi(vargv[3]) : 10;
+    if (m < 0 || m > 100) {
         fprintf(stderr, "Blad: Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
@@ -75,22 +75,7 @@ int main(int argc, char **argv) {
     Graph *graph = load_graph(argv[1]);
     printGraph(graph);
 
-    ListOfGraphs * result = malloc(sizeof(ListOfGraphs));
-    for (int i = 0; i < N + 1; i++)
-    {
-        result->subgraphs[i] = NULL;
-    }
-    printf("\nyolo\n");
-    recursive_partition(&graph, N, M, result);
-    printf("\nyolo\n");
-
-    for (int i = 0; i < N + 1; i++)
-    {
-        if (result->subgraphs[i] != NULL) printGraph(result->subgraphs[i]);
-        printf("\n-\n");
-    }
-
-    printGraph(graph);
+    save_graph(graph, output_filename, terminal_output, file_output, binary_output, 2);
 
     return EXIT_SUCCESS;
 }
