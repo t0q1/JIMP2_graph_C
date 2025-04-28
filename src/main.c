@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h>
 
 #include "../include/getopt.h"
 #include "../include/graph.h"
@@ -49,7 +48,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (vargc <= 1) {
         fprintf(stderr, "Blad: Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
@@ -74,8 +72,7 @@ int main(int argc, char **argv) {
     // wczytywanie grafu z pliku
     Graph *graph = load_graph(argv[1]);
     printGraph(graph);
-
-    save_graph(graph, output_filename, terminal_output, file_output, binary_output, 2);
-
+    
+    
     return EXIT_SUCCESS;
 }
