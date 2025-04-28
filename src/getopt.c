@@ -21,15 +21,17 @@ int *argq;
 void double_size(char ***vector, size_t *current) {
     *current *= 2;
 
-    void *new_ptr = realloc(*vector, *current);
+    char **new_ptr = realloc(*vector, *current * sizeof(char *));
     if (!new_ptr) {
         fprintf(stderr, "Getopt error: allocation failed.\n");
         exit(EXIT_FAILURE);
     }
 
     *vector = new_ptr;
-    for (size_t i = *current/2; i < *current; i++)
+
+    for (size_t i = *current / 2; i < *current; i++) {
         *(vector + i) = NULL;
+    }
 }
 
 bool init_getopt(const char *format) {

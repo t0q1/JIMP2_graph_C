@@ -54,7 +54,6 @@ int main(int argc, char **argv) {
                 exit(EXIT_FAILURE);
         }
     }
-
     if (vargc <= SYS) {
         fprintf(stderr, "Blad: Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
@@ -80,7 +79,6 @@ int main(int argc, char **argv) {
     // wczytywanie grafu z pliku
     Graph *graph = load_graph(vargv[SYS]);
     printGraph(graph);
-    
     
     return EXIT_SUCCESS;
 }
