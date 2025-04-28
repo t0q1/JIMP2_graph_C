@@ -6,6 +6,20 @@
 #include <stdbool.h>
 #include <limits.h>
 
+ListOfGraphs *init_list_of_graphs(int n) {
+    ListOfGraphs *list = malloc(sizeof(ListOfGraphs));
+    list->subgraphs = calloc(n, sizeof(Graph*));
+    list->n = n;
+    list->count = 0;
+    return list;
+}
+
+void freeListOfGraphs(ListOfGraphs **list) {
+    free((*list)->subgraphs);
+    free(*list);
+    *list = NULL;
+}
+
 Node *createNode(int vertex) { // tworzy wierzcholek
     Node * newNode = malloc(sizeof(Node));
     newNode->vertex = vertex;
@@ -131,9 +145,8 @@ bool margin_ok(int sizeA, int sizeB, int margin_percent) { // sprawdza czy utwor
 }
 
 void add_partition(ListOfGraphs *list, Graph *g) { // dodaje partycje do listy podgrafow
-    if (list->count < 1000) { // 1000 bo taka jest max dlugosc tablicy
+    if (list->count < list->n)
         list->subgraphs[list->count++] = g;
-    }
 }
 
 int get_min_index(int *part, int n, int partition_value) {
@@ -199,7 +212,7 @@ int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *r
 
         if (!margin_ok(sizeA, sizeB, margin_percent)) {
             current_graph++;
-            if (current_graph > k)
+            if (current_graph >= result->count)
                 break;
             continue;
         }
@@ -215,7 +228,6 @@ int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *r
         current_graph = 0;
         free(part);
     }
-
     // Scalanie podgrafów w jeden
     Graph *newGraph = createGraph((*g)->n);
     int i = 0;
@@ -231,6 +243,5 @@ int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *r
         i++;
     }
     *g = newGraph;
-
     return counter;
 } 
