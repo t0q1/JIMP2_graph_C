@@ -64,7 +64,7 @@ Aby uruchomić program należy w teminalu wywołać plik wykonywalny znajdujący
 Przykład wywołania programu wczytującego graf z pliku /tests/graf.csrrg, wypisującego wynik w trybie tekstowym w terminalu oraz do pliku podzial.txt:
 \textbf{./bin/graf /tests/graf.csrrg 2 20 -o podzial.txt -t}\\
 
-Przykład wywołania programu wczytującego graf z pliku /tests/graf2.csrrg, wypisującego wynik w trybie binarnym w terminalu oraz do wynik.txt:\\
+Przykład wywołania programu wczytującego graf z pliku /tests/graf2.csrrg, wypisującego wynik w trybie binarnym w terminalu:\\
 \textbf{./bin/graf /tests/graf2.csrrg -t -b}
 
 \section*{Format wyjściowy}
@@ -80,10 +80,15 @@ Na wynik końcowy w trybie tekstowym (domyślny) składa się:
 W przypadku trybu binarnego, podawany jest jedynie sam graf. Sposób zapisania grafu w postaci binarnej przedstawia sekcja \textbf{Plik binarny}.
 
 \section*{Plik binarny}
-Sposób zapisania grafu do pliku binarnego, odbywa się poprzez zapisanie każdego znaku, z oryginalnego formatu zapisu grafu, do jego odpowidnika w tablicy ASCII, jako liczby 32 bitowe.\\\\
+W trybie binarnym każda liczba reprezentowana jest binarnie na 32 bitach. Znak \textbf{\textbackslash n} jest reprezantowany przez ciąg 32 jedynek, natomiast znak \textbf{;} przez ciąg 31 jedynek i zera.\\
 
-Przykład:\\
+\textbf{Przykładowo:}
 
+\begin{itemize}
+  \item Liczba 5 jest reprezentowana przez 00000000000000000000000000000101
+  \item Znak \textbf{\textbackslash n} przez 11111111111111111111111111111111
+  \item Znak \textbf{;} przez 11111111111111111111111111111110
+\end{itemize}
 
 \section*{Pliki źródłowe}
 W katalogu src znajdują się następujące pliki:
@@ -124,12 +129,7 @@ gdzie:
 
 
 \section*{Funkcja podziału grafu}
-
-\section*{Testy}
-Przypadek testowy \textbf{make test1}:\\
-Argumenty wywołania: \textbf{/testy/graf.csrrg 2 -t}\\\\
-<prosta reprezentacja graficzne przypadku?>\\
-<opis przypadku?>
+Użyty w naszych programie algorytm do podziału grafu jest uproszczoną wersją algorytmu Kerninghana-Lina. \\W pierwszym kroku wierzchołki są przypisywane w miarę po równo do dwóch części (0 i 1). Następnie za pomoca pętli, algorytm przechodzi kolejno wszystkie wierzchołki i sprawdza czy przeniesienie danego wierzchołka do drugiej części zmniejsza liczbę przecięć. Warto zaznaczyć, że wierzchołek jest przenoszony tylko wtedy gdy nie zaburzy równowagi dwóch części. Takim sposobem udaje nam się uzyskać dwa grafy z grafu pierwotnego. Ze względu, że nowo powstałe grafy mają tyle samo wierzchołków co pierwotny graf, to nasz algorytm szuka tej granicy między tymi grafami. Następnie zmniejsza grafy do ich faktycznych rozmiarów, czyli pozbywa się wierzchołków, które wykorzystuje drugi graf. Kolejno algorytm sprawdza czy zgadza się różnica wierzchołków z podanym marginesem, jeśli się zgadza, nowe grafy są dodawane do tablicy grafów. W przeciwnym razie, brany jest kolejny graf z tablicy grafów. Pod koniec wszystkie grafy z tablicy grafów są scalane w jeden duży graf z pierwotnymi etykietami wierzchołków, co powoduje powstanie grafu z taką samą liczbą wierzchołków, co graf z pliku wejściowego.
 
 \section*{Link do repozytorium:}
 \url{https://github.com/t0q1/JIMP2_graph_C/tree/main}
