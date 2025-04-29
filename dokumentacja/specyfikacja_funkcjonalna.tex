@@ -42,7 +42,7 @@ Do prawidłowego dokonania podziału grafu potrzebne będą informacje o grafie,
   \item Wskaźniki na pierwsze węzły w poszczególnych grupach.
 \end{itemize}
 \textbf{Przykład grafu w pliku wejściowym:}\\
-\texttt{5\\0;2;4;1;3;0;1;2;3\\0;3;5;9\\0;1;2;5;1;3;4;2;5;7;3;6;4;5;7;5;8;6;7;8 \\0;4;7;10;12;15;17;20}
+\texttt{5\\0;2;4;1;3;0;1;2;3\\0;3;5;9\\0;1;2;5;1;3;4;2;5;7;3;6;4;5;7;5;8;6;7;8 \\0;4;7;10;12;15;17}
 
 \section*{Dane wyjściowe}
 Wyniki operacji programu mogą zostać wyświetlone lub zapisane na dwa różne sposoby.
@@ -51,7 +51,15 @@ Wyniki operacji programu mogą zostać wyświetlone lub zapisane na dwa różne 
 
 \item W trybie binarnym, gdzie ma być zwracane tylko grafy. Tryb ten nie ma z góry określonego formatu.
 \end{enumerate}
+W trybie binarnym każda liczba reprezentowana jest binarnie na 32 bitach. Znak \textbf{\textbackslash n} jest reprezantowany przez ciąg 32 jedynek, natomiast znak \textbf{;} przez ciąg 31 jedynek i zera.\\
 
+\textbf{Przykładowo:}
+
+\begin{itemize}
+  \item Liczba 5 jest reprezentowana przez 00000000000000000000000000000101
+  \item Znak \textbf{\textbackslash n} przez 11111111111111111111111111111111
+  \item Znak \textbf{;} przez 11111111111111111111111111111110
+\end{itemize}
 Warto zaznaczyć, że w zależności od podanych flag, program może jednocześnie wyświetlić wynik w terminalu, jak i zapisać go do pliku.\\
 
 \textbf{Program przyjmuje następujące flagi:}
@@ -65,7 +73,9 @@ Warto zaznaczyć, że w zależności od podanych flag, program może jednocześn
 
 \section*{Teoria}
 
-Program po wczytaniu grafu, dzieli go określoną przez użytkownika liczbę razy, przecinając przy tym jak najmniejszą liczbę krawędzi. Dla każdego podziału różnica procentowa wierzchołków dwóch nowoutworzonych grafów nie może być większa od marginesu procentowego podanego przez użytkownika. Jest ona wyliczana ze wzoru: \[ \frac{|A - B|}{\frac{(A + B)}{2}} \cdot 100\%\],gdzie \textbf{A} - liczba wierzchołków pierwszego z nowopostałych grafów, natomiast \textbf{B} liczba wierzchołków drugiego. Gdy graf został podzielony określoną liczbę razy lub dalszy podział jest niemożliwy, program zapisuje wyniki i kończy działanie.
+Program po wczytaniu grafu, dzieli go określoną przez użytkownika liczbę razy, przecinając przy tym jak najmniejszą liczbę krawędzi. Dla każdego podziału różnica procentowa wierzchołków dwóch nowoutworzonych grafów nie może być większa od marginesu procentowego podanego przez użytkownika. Jest ona wyliczana ze wzoru: \[ \frac{2|A - B|}{{(A + B)}} \cdot 100\%\],gdzie \textbf{A} - liczba wierzchołków pierwszego z nowopostałych grafów, natomiast \textbf{B} liczba wierzchołków drugiego. Gdy graf został podzielony określoną liczbę razy lub dalszy podział jest niemożliwy, program zapisuje wyniki i kończy działanie.\\
+
+Aby podzielić graf 2 razy (na 3 części), algorytm najpierw dzieli go na 2 podgrafy, zachowując przy tym minimalną liczbę przecięć. Następnie z dwóch nowoutworzonych grafów, weybiera ten, który jest możliwy do podziału oraz zapewni najmniejszą możliwą liczbę przecięć. 
 
 \section*{Możliwe błędy podczas uruchamiania}
 \textbf{Program przerywa działanie, gdy napotka nieprawidłowości we wprowadzonych danych i wyświetla odpowiedni komunikat:}
@@ -73,11 +83,22 @@ Program po wczytaniu grafu, dzieli go określoną przez użytkownika liczbę raz
 \begin{enumerate}
   \item Nieudana próba otwarcia pliku wejściowego: \textbf{Nie udało się otworzyć pliku wejściowego o podanej ścieżkce. Przerywam działanie.}
 
+  \item Nieudana próba otwarcia pliku wyjściowego: \textbf{Nie udało się otworzyć pliku wyjściowego o podanej ścieżkce. Przerywam działanie.}
+  
   \item Błąd w odczycie pliku wejściowego: \textbf{Dane w pliku przedstawiające graf są niepoprawne. Przerywam działanie.}
   
   \item Niepoprawna liczba podzieleń grafu: \textbf{Liczba podzieleń grafu musi być większa bądź równa 1. Przerywam działanie.}
+
+  \item Liczba podzieleń grafu przekraczająca wartości maksymalne typu INT lub zawierająca błąd: \textbf{Liczba podzieleń grafu została niepoprawnie zdefiniowana. Przerywam działanie.}
+  
   
   \item Niepoprawny margines różnicy procentowej: \textbf{Liczba marginesu różnicy procentowej między wierzchołkami powstałych grafów musi znajdować się w przedziale [0-100]. Przerywam działanie.}
+
+  \item Zbyt mała liczba argumentów: \textbf{Zbyt mała liczba argumentów. Należy podać ściezkę pliku wejściowego. Przerywam działanie.}
+
+  \item Nieznana flaga: \textbf{Nieznana flaga -F. Przerywam dzialanie.}
+
+  \item Flaga podana bez argumentu: \textbf{Flaga -F wymaga argumentu. Przerywam dzialanie.}
   
 \end{enumerate}
 \end{document}
