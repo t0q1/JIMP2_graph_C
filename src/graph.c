@@ -200,7 +200,6 @@ int count(int* array, int n, int value) // zlicza liczbe elementow o podanej war
 int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *result) {
     int counter = 0;
     int current_graph = 0;
-
     add_partition(result, *g);
     while (result->count < k + 1) {
         Graph *to_split = result->subgraphs[current_graph];
@@ -223,15 +222,12 @@ int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *r
         // Podmieniamy stara partycje dwiema nowymi
         result->subgraphs[current_graph] = A;
         add_partition(result, B);
-
         counter++;
-        current_graph = 0;
         free(part);
     }
     // Scalanie podgrafów w jeden
     Graph *newGraph = createGraph((*g)->n);
-    int i = 0;
-    while (result->subgraphs[i]) {
+    for (int i = 0; i < result->count; i++) {
         Graph *temp = result->subgraphs[i];
         for (int j = 0; j < temp->n; j++) {
             Node *tempNode = temp->adj[j];
@@ -240,7 +236,6 @@ int recursive_partition(Graph **g, int k, double margin_percent, ListOfGraphs *r
                 tempNode = tempNode->next;
             }
         }
-        i++;
     }
     *g = newGraph;
     return counter;
