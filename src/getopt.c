@@ -30,7 +30,7 @@ void double_size(char ***vector, size_t *current) {
     *vector = new_ptr;
 
     for (size_t i = *current / 2; i < *current; i++) {
-        *(vector + i) = NULL;
+        *(*vector + i) = NULL;
     }
 }
 

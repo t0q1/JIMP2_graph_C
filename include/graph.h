@@ -14,9 +14,13 @@ typedef struct {
 } Graph;
 
 typedef struct {
-    Graph *subgraphs[1000];
+    int n;
+    Graph **subgraphs;
     int count;
 } ListOfGraphs;
+
+ListOfGraphs *init_list_of_graphs(int n);
+void freeListOfGraphs(ListOfGraphs **list);
 
 void addEdge(Graph* graph, int u, int v);
 Graph *createGraph(int n);

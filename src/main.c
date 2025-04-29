@@ -7,13 +7,6 @@
 #include "../include/graph.h"
 #include "../include/file_graph.h"
 
-#ifdef _WIN32
-#define SYS 0
-#else
-#define SYS 1
-#endif
-
-
 const char *help_menu = "------POMOC------\n"
                             "Argumenty:\n"
                             " (1)\t<path>\t- plik wejsciowy z grafem\n"
@@ -72,18 +65,18 @@ int main(int argc, char **argv) {
                 exit(EXIT_FAILURE);
         }
     }
-    if (vargc <= SYS) {
+    if (vargc <= 1) {
         fprintf(stderr, "Blad: Zbyt mala liczba argumentow. Nalezy podac sciezke pliku wejsciowego. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
 
-    int n = vargc > SYS+1 ? safe_atoi(vargv[SYS+1]) : 1;
+    int n = vargc > 2 ? safe_atoi(vargv[2]) : 1;
     if (n < 1) {
         fprintf(stderr, "Blad: Liczba podzielen grafu musi byc wieksza badz rowna 1. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
     }
 
-    int m = vargc > SYS+2 ? safe_atoi(vargv[SYS+2]) : 10;
+    int m = vargc > 3 ? safe_atoi(vargv[3]) : 10;
     if (m < 0 || m > 100) {
         fprintf(stderr, "Blad: Liczba marginesu roznicy procentowej miedzy wierzcholkami powstalych grafow musi znajdowac sie w przedziale [0-100]. Przerywam dzialanie.\n");
         return EXIT_FAILURE;
@@ -95,12 +88,13 @@ int main(int argc, char **argv) {
         file_output = true;
 
     // wczytywanie grafu z pliku
-    Graph *graph = load_graph(vargv[SYS]);
-    ListOfGraphs *result = calloc(n, sizeof(ListOfGraphs));
+    Graph *graph = load_graph(vargv[1]);
+    ListOfGraphs *result = init_list_of_graphs(n + 1);
 
     int division = recursive_partition(&graph, n, m, result);
 
     save_graph(graph, output_filename, terminal_output, file_output, binary_output, division);
     freeGraph(graph);
+    freeListOfGraphs(&result);
     return EXIT_SUCCESS;
 }
