@@ -3,12 +3,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc} 
 \usepackage[polish]{babel}
-\usepackage{hyperref}
 \usepackage{graphicx}
 
 \title{\textbf{Specyfikacja implementacyjna programu dzielącego graf}}
 \author{Adam Domański, Oliwier Osiński}
-\date{28.04.2025}
+\date{30.04.2025}
 
 \begin{document}
 \maketitle
@@ -88,7 +87,68 @@ W trybie binarnym każda liczba reprezentowana jest binarnie na 32 bitach. Znak 
   \item Liczba 5 jest reprezentowana przez 00000000000000000000000000000101
   \item Znak \textbf{\textbackslash n} przez 11111111111111111111111111111111
   \item Znak \textbf{;} przez 11111111111111111111111111111110
+
+  Przykład:
+  graf w formie tekstowej: 5\textbackslash n0;2;4;1;3;0;1;2;3\textbackslash n0;3;5;9\textbackslash n0;1;4;7;5;5;8;6;8;7\textbackslash n0;2;5;7
+  zapisa w postaci binarnej:\\
+  00000000000000000000000000000101
+  11111111111111111111111111111111
+  00000000000000000000000000000000
+  11111111111111111111111111111110
+  00000000000000000000000000000010
+  11111111111111111111111111111110
+  00000000000000000000000000000100
+  11111111111111111111111111111110
+  00000000000000000000000000000001
+  11111111111111111111111111111110
+  00000000000000000000000000000011
+  11111111111111111111111111111110
+  00000000000000000000000000000000
+  11111111111111111111111111111110
+  00000000000000000000000000000001
+  11111111111111111111111111111110
+  00000000000000000000000000000010
+  11111111111111111111111111111110
+  00000000000000000000000000000011
+  11111111111111111111111111111111
+  00000000000000000000000000000000
+  11111111111111111111111111111110
+  00000000000000000000000000000011
+  11111111111111111111111111111110
+  00000000000000000000000000000101
+  11111111111111111111111111111110
+  00000000000000000000000000001001
+  11111111111111111111111111111111
+  00000000000000000000000000000000
+  11111111111111111111111111111110
+  00000000000000000000000000000001
+  11111111111111111111111111111110
+  00000000000000000000000000000100
+  11111111111111111111111111111110
+  00000000000000000000000000000111
+  11111111111111111111111111111110
+  00000000000000000000000000000101
+  11111111111111111111111111111110
+  00000000000000000000000000000101
+  11111111111111111111111111111110
+  00000000000000000000000000001000
+  11111111111111111111111111111110
+  00000000000000000000000000000110
+  11111111111111111111111111111110
+  00000000000000000000000000001000
+  11111111111111111111111111111110
+  00000000000000000000000000000111
+  11111111111111111111111111111111
+  00000000000000000000000000000000
+  11111111111111111111111111111110
+  00000000000000000000000000000010
+  11111111111111111111111111111110
+  00000000000000000000000000000101
+  11111111111111111111111111111110
+  00000000000000000000000000000111
 \end{itemize}
+
+Zapis grafu w formacie binarnym nie zawiera spacji, tylko stały ciąg zer i jedynek. Powyższy przykład zawiera spacje dla łatwiejszej wizualizacji.
 
 \section*{Pliki źródłowe}
 W katalogu src znajdują się następujące pliki:
@@ -129,9 +189,7 @@ gdzie:
 
 
 \section*{Funkcja podziału grafu}
-Użyty w naszych programie algorytm do podziału grafu jest uproszczoną wersją algorytmu Kerninghana-Lina. \\W pierwszym kroku wierzchołki są przypisywane w miarę po równo do dwóch części (0 i 1). Następnie za pomoca pętli, algorytm przechodzi kolejno wszystkie wierzchołki i sprawdza czy przeniesienie danego wierzchołka do drugiej części zmniejsza liczbę przecięć. Warto zaznaczyć, że wierzchołek jest przenoszony tylko wtedy gdy nie zaburzy równowagi dwóch części. Takim sposobem udaje nam się uzyskać dwa grafy z grafu pierwotnego. Ze względu, że nowo powstałe grafy mają tyle samo wierzchołków co pierwotny graf, to nasz algorytm szuka tej granicy między tymi grafami. Następnie zmniejsza grafy do ich faktycznych rozmiarów, czyli pozbywa się wierzchołków, które wykorzystuje drugi graf. Kolejno algorytm sprawdza czy zgadza się różnica wierzchołków z podanym marginesem, jeśli się zgadza, nowe grafy są dodawane do tablicy grafów. W przeciwnym razie, brany jest kolejny graf z tablicy grafów. Pod koniec wszystkie grafy z tablicy grafów są scalane w jeden duży graf z pierwotnymi etykietami wierzchołków, co powoduje powstanie grafu z taką samą liczbą wierzchołków, co graf z pliku wejściowego.
-
-\section*{Link do repozytorium:}
-\url{https://github.com/t0q1/JIMP2_graph_C/tree/main}
+Użyty w naszych programie algorytm do podziału grafu jest uproszczoną wersją algorytmu Kerninghana-Lina. \\
+W pierwszym kroku wierzchołki są reprezentowane w tablicy intów o długości ilości wierzchołków w grafie, etykieta węzła odpowiada indeksowi w tej tablicy. Do tablicy przypisywane są po równo wartości (0 i 1), wartości te będą reprezentować na koniec dwa grafy, jeden z wierzchołkami o wartościach 0 i drugi z wierzchołkami o wartościach 1. Następnie przy pomocy pętli, algorytm przechodzi kolejno wszystkie wierzchołki w tablicy i sprawdza czy przeniesienie danego wierzchołka (zmiana wartość na przeciwną) do drugiej części zmniejsza liczbę przecięć. Warto zaznaczyć, że wierzchołek jest przenoszony tylko wtedy gdy nie zaburzy równowagi dwóch części. Następnie z powstałej tablicy składającej się z 0 i 1, są tworzone dwa grafy. W przypadku gdy powstałe grafy spełniają warunek różnicy liczby wierzchołków, to pierwotny dzielony graf w tablicy grafów jest podmieniany na pierwszy nowo powstały graf, a drugi powstały graf jest dodawany na koniec tablicy grafów. W przypadku gdy nie spełniają tego warunku, indeks wskazujący na obecny graf w tablicy grafów jest zwiększany o jeden i proces podziału zaczyna się od początku dla kolejnego grafu w kolejce. Po zakończeniu wszyskich podziałów grafów, wszyskie grafy z tablicy grafów zostają scalone w jeden duży graf, który ma tyle samo wierzchołków co graf wczytywany z pliku wejściowego. Ze względu na parametry start i parent w strukturze grafu, każdy graf zna pierwotne wartości etykiet z wczytywanego grafu. Następnie funkcja zwróci liczbę udanych podziałów grafów i cały proces dobiegnie do końca. 
 
 \end{document}
